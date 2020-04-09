@@ -9,65 +9,69 @@ public class UserInterface {
   /**
    * whether the user has already put a command
    */
-  private static boolean hasCMD;
-  private static String currentCMD;
+  private  boolean hasCMD;
+  private  String currentCMD;
+  private  String username;
+  private BufferedReader stdIn;
 
-  public static void main(String[] args) {
-    BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-    while (true) {
+  UserInterface(String username, BufferedReader stdIn) {
+    this.username = username;
+    this.stdIn = stdIn;
+  }
+
+  public byte[] getMessage() throws IOException {
       // get CMD first
-      if (!hasCMD) {
+      if (!this.hasCMD) {
         System.out.println("\nPlease Enter a command: ");
-        try {
-          String line = stdIn.readLine();
-          getCommand(line);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        String line = stdIn.readLine();
+        getCommand(line);
+        return new byte[0];
       }
       // handle CMD
       else {
-        handleCommand();
+        return handleCommand();
       }
-    }
   }
 
-  public static void getCommand(String line) {
+  private void getCommand(String line) {
     // no such command
     if (!ConstantsUtil.CMD_SET.contains(line)) {
       System.out.println("Error! No Such Command!");
       System.out.println("Type ? to see the usage");
     } else {
-      currentCMD = line;
-      hasCMD = true;
+      this.currentCMD = line;
+      this.hasCMD = true;
     }
   }
-  public static void handleCommand() {
-    switch (currentCMD) {
+  private byte[] handleCommand() {
+    byte[] msg;
+    switch (this.currentCMD) {
       case ConstantsUtil.HELP_CMD:
-        handleHelpCommand();
+        msg = handleHelpCommand();
         break;
       case ConstantsUtil.LOG_OFF_CMD:
-        handleLogOffCommand();
+        msg = handleLogOffCommand();
         break;
       case ConstantsUtil.SHOW_USERS_CMD:
-        handleShowUsersCommand();
+        msg =  handleShowUsersCommand();
         break;
       case ConstantsUtil.SEND_MESSAGE_CMD:
-        handleSendMessageCommand();
+        msg = handleSendMessageCommand();
         break;
       case ConstantsUtil.BROADCAST_CMD:
-        handleBroadCastCommand();
+        msg = handleBroadCastCommand();
         break;
       case ConstantsUtil.SEND_INSULT_CMD:
-        handleSendInsultCommand();
+        msg = handleSendInsultCommand();
         break;
       default:
         System.out.println("Error! No Such Command!");
+        msg = new byte[0];
     }
+    return msg;
   }
 
-  public static void handleHelpCommand() {
+  private byte[] handleHelpCommand() {
     System.out.println("Usage:");
     System.out.println("logoff: sends a DISCONNECT_MESSAGE to the server\n"
         + "who: sends a QUERY_CONNECTED_USERS to the server\n"
@@ -75,21 +79,34 @@ public class UserInterface {
         + "@all: sends a BROADCAST_MESSAGE to the server, to be sent to all users connected\n"
         + "!user: sends a SEND_INSULT message to the server, to be sent to the specified user");
     hasCMD = false;
+    currentCMD = "";
+    return "sfsdf".getBytes();
   }
 
-  public static void handleLogOffCommand() {
+  private byte[] handleLogOffCommand() {
     hasCMD = false;
+    currentCMD = "";
+    return new byte[0];
   }
-  public static void handleShowUsersCommand() {
+  private byte[] handleShowUsersCommand() {
     hasCMD = false;
+    currentCMD = "";
+    return new byte[0];
   }
-  public static void handleSendMessageCommand() {
+  private byte[] handleSendMessageCommand() {
+    System.out.println("Please Enter the username you want to send the message to:");
     hasCMD = false;
+    currentCMD = "";
+    return new byte[0];
   }
-  public static void handleBroadCastCommand() {
+  private byte[] handleBroadCastCommand() {
     hasCMD = false;
+    currentCMD = "";
+    return new byte[0];
   }
-  public static void handleSendInsultCommand() {
+  private byte[] handleSendInsultCommand() {
     hasCMD = false;
+    currentCMD = "";
+    return new byte[0];
   }
 }

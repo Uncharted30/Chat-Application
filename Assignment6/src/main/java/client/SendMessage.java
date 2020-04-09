@@ -34,13 +34,17 @@ public class SendMessage implements Runnable {
 
   @Override
   public void run() {
+    UserInterface userInterface = new UserInterface(username, stdIn);
     while (loginStatus.isLogin()) {
       // read the message to deliver.
       try {
         // todo: parse input from UI
-        String msg = stdIn.readLine();
+        byte[] msg = userInterface.getMessage();
         // write on the output stream
-        chatSocketOut.write(msg.getBytes());
+        if (msg.length > 0) {
+          System.out.println("write");
+          chatSocketOut.write(msg);
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }
