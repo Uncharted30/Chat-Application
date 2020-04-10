@@ -1,6 +1,8 @@
 package client;
 
+import client.util.CommandParser;
 import common.ConstantsUtil;
+import java.io.IOException;
 import java.util.Map;
 import org.apache.commons.cli.ParseException;
 
@@ -20,6 +22,9 @@ public class Runner {
           + "-u(must be specified) the username");
     } catch (NumberFormatException e) {
       System.err.println("Error! port must be an integer");
+    } catch (IOException e) {
+      System.out.println("Some thing wrong to close socket!");
+      e.printStackTrace();
     }
   }
 }

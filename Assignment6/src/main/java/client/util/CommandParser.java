@@ -1,4 +1,4 @@
-package client;
+package client.util;
 
 import common.ConstantsUtil;
 import java.util.HashMap;

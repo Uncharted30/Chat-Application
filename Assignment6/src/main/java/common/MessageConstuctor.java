@@ -1,9 +1,7 @@
 package common;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MessageConstuctor {
@@ -11,6 +9,7 @@ public class MessageConstuctor {
   private static byte[] getHeadMsg(int head) {
     return ConvertUtil.intToByteArray(head);
   }
+
   private static byte[] getStringMsg(String content) {
     int len = ConstantsUtil.MSG_SIZE_LEN + ConstantsUtil.MSG_SPLIT_LEN + content.length();
     byte[] msgBytes = new byte[len];
@@ -32,7 +31,7 @@ public class MessageConstuctor {
     return msgBytes;
   }
 
-  private static byte[] getTypeOneMsg(List<String> contents, int headID) {
+  public static byte[] getTypeOneMsg(List<String> contents, int headID) {
     // construct the content
     List<Byte> tempContentBytes = new ArrayList<>();
     for (String content : contents) {
@@ -67,24 +66,24 @@ public class MessageConstuctor {
     return msgBytes;
   }
 
-  public static byte[] getConnectMsg(String username) {
-    return getTypeOneMsg(new ArrayList<>(Arrays.asList(username)), ConstantsUtil.CONNECT_MESSAGE);
-  }
-
-  public static byte[] getLogOffMsg(String username) {
-    return getTypeOneMsg(new ArrayList<>(Arrays.asList(username)), ConstantsUtil.DISCONNECT_MESSAGE);
-  }
-  public static byte[] getQueryUsersMsg(String username) {
-    return getTypeOneMsg(new ArrayList<>(Arrays.asList(username)), ConstantsUtil.QUERY_CONNECTED_USERS);
-  }
-
-  public static byte[] getDirectMsg(String from, String to, String content) {
-    return getTypeOneMsg(new ArrayList<>(Arrays.asList(from, to, content)), ConstantsUtil.DIRECT_MESSAGE);
-  }
-  public static byte[] getBroadcastMsg(String from, String content) {
-    return getTypeOneMsg(new ArrayList<>(Arrays.asList(from, content)), ConstantsUtil.BROADCAST_MESSAGE);
-  }
-  public static byte[] getInsultMsg(String from, String to) {
-    return getTypeOneMsg(new ArrayList<>(Arrays.asList(from, to)), ConstantsUtil.SEND_INSULT);
-  }
+//  public static byte[] getConnectMsg(String username) {
+//    return getTypeOneMsg(new ArrayList<>(Arrays.asList(username)), ConstantsUtil.CONNECT_MESSAGE);
+//  }
+//
+//  public static byte[] getLogOffMsg(String username) {
+//    return getTypeOneMsg(new ArrayList<>(Arrays.asList(username)), ConstantsUtil.DISCONNECT_MESSAGE);
+//  }
+//  public static byte[] getQueryUsersMsg(String username) {
+//    return getTypeOneMsg(new ArrayList<>(Arrays.asList(username)), ConstantsUtil.QUERY_CONNECTED_USERS);
+//  }
+//
+//  public static byte[] getDirectMsg(String from, String to, String content) {
+//    return getTypeOneMsg(new ArrayList<>(Arrays.asList(from, to, content)), ConstantsUtil.DIRECT_MESSAGE);
+//  }
+//  public static byte[] getBroadcastMsg(String from, String content) {
+//    return getTypeOneMsg(new ArrayList<>(Arrays.asList(from, content)), ConstantsUtil.BROADCAST_MESSAGE);
+//  }
+//  public static byte[] getInsultMsg(String from, String to) {
+//    return getTypeOneMsg(new ArrayList<>(Arrays.asList(from, to)), ConstantsUtil.SEND_INSULT);
+//  }
 }

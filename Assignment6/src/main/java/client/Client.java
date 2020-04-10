@@ -1,9 +1,14 @@
 package client;
 
 // A Java program for a Client
+import client.bean.ConnectMsgRes;
+import client.bean.LoginStatus;
+import common.ConstantsUtil;
 import common.MessageConstuctor;
+import common.MessageProcessor;
 import java.net.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 public class Client {
@@ -37,24 +42,25 @@ public class Client {
     }
   }
 
-  public void run() {
+  public void run() throws IOException {
 
     // connect firstly
-    //todo: connect firstly
-//    if (!connect()) {
-//      return;
-//    }
+    if (!connect()) {
+      return;
+    }
 
     // sendMessage thread
     SendMessage sendMessage = new SendMessage(username, stdIn, chatSocketOut, loginStatus);
     // readMessage thread
-    ReadMessage readMessage = new ReadMessage(chatSocket, chatSocketIn, loginStatus);
+    ReadMessage readMessage = new ReadMessage(chatSocket, chatSocketIn, chatSocketOut, loginStatus);
 
     try {
       sendMessage.run();
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
+      stdIn.close();
+      chatSocketOut.close();
       countDownLatch.countDown();
     }
 
@@ -63,6 +69,8 @@ public class Client {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
+      chatSocketIn.close();
+      chatSocket.close();
       countDownLatch.countDown();
     }
 
@@ -75,14 +83,21 @@ public class Client {
 
   private boolean connect() {
     // send connect msg
-    byte[] connectMsg = MessageConstuctor.getConnectMsg(username);
+    byte[] connectMsg = MessageConstuctor.getTypeOneMsg(Arrays.asList(username), ConstantsUtil.CONNECT_MESSAGE);
     try {
       chatSocketOut.write(connectMsg);
+      // read head
+      chatSocketIn.readInt();
+      // read space
+      chatSocketIn.read();
+      MessageProcessor messageProcessor = new MessageProcessor(chatSocketIn);
+      ConnectMsgRes connectMsgRes = messageProcessor.processConnectResMsg();
+      System.out.println(connectMsgRes.getContent());
+      return connectMsgRes.isStatus();
     } catch (IOException e) {
       e.printStackTrace();
       return false;
     }
-    return true;
   }
 
   public String getUsername() {

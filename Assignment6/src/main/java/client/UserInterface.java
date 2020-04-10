@@ -5,6 +5,7 @@ import common.MessageConstuctor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class UserInterface {
   /**
@@ -87,12 +88,12 @@ public class UserInterface {
   private byte[] handleLogOffCommand() {
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor.getLogOffMsg(username);
+    return MessageConstuctor.getTypeOneMsg(Arrays.asList(username), ConstantsUtil.DISCONNECT_MESSAGE);
   }
   private byte[] handleShowUsersCommand() {
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor.getQueryUsersMsg(username);
+    return MessageConstuctor.getTypeOneMsg(Arrays.asList(username), ConstantsUtil.QUERY_CONNECTED_USERS);
   }
 
   private byte[] handleSendMessageCommand() throws IOException {
@@ -102,20 +103,20 @@ public class UserInterface {
     String message = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor.getDirectMsg(this.username, receiver, message);
+    return MessageConstuctor.getTypeOneMsg(Arrays.asList(username, receiver, message), ConstantsUtil.DIRECT_MESSAGE);
   }
   private byte[] handleBroadCastCommand() throws IOException {
     System.out.println("Please Enter the message you want to send:");
     String message = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor.getBroadcastMsg(this.username, message);
+    return MessageConstuctor.getTypeOneMsg(Arrays.asList(username, message), ConstantsUtil.BROADCAST_MESSAGE);
   }
   private byte[] handleSendInsultCommand() throws IOException {
     System.out.println("Please Enter the username you want to send the insult to:");
     String receiver = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor.getInsultMsg(this.username, receiver);
+    return MessageConstuctor.getTypeOneMsg(Arrays.asList(username, receiver), ConstantsUtil.SEND_INSULT);
   }
 }

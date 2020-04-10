@@ -35,7 +35,10 @@ public class Server
       {
         try
         {
-          in.read();
+            System.out.println(in.readInt());
+            in.read();
+            MessageProcessor messageProcessor = new MessageProcessor(in);
+            System.out.println(messageProcessor.processLogOffMsg());
         }
         catch(IOException i)
         {

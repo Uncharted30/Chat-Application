@@ -1,4 +1,4 @@
-package client;
+package client.bean;
 
 public class LoginStatus {
   private volatile boolean isLogin;
