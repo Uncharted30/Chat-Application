@@ -43,7 +43,7 @@ public class ReadMessage implements Runnable {
         switch (head) {
           case ConstantsUtil.CONNECT_RESPONSE: disconnectHandler(messageProcessor.processConnectResMsg());
             break;
-          case ConstantsUtil.QUERY_USER_RESPONSE: queryResHandler(messageProcessor);
+          case ConstantsUtil.QUERY_USER_RESPONSE: queryResHandler(messageProcessor.processQueryMsg());
             break;
           case ConstantsUtil.DIRECT_MESSAGE: directMsgHandler(messageProcessor.processDirectMsg());
             break;
