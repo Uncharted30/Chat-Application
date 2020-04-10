@@ -1,8 +1,12 @@
 package common;
 
 import client.bean.ConnectMsgRes;
+import client.bean.DirectMsg;
+import client.bean.QueryRes;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageProcessor {
   private DataInputStream inputStream;
@@ -11,24 +15,49 @@ public class MessageProcessor {
     this.inputStream = inputStream;
   }
 
+  private String readItem() throws IOException{
+    int itemLen = inputStream.readInt();
+    byte[] item = new byte[itemLen];
+    inputStream.read();
+    inputStream.read(item, 0, itemLen);
+    return new String(item);
+  }
 
   public String processLogOffMsg() throws IOException {
-    int usernameLen = inputStream.readInt();
-    byte[] usernameBytes = new byte[usernameLen];
-    inputStream.read();
-    inputStream.read(usernameBytes, 0, usernameLen);
-    return new String(usernameBytes);
+    return readItem();
+  }
+
+  public String processFailedMsg() throws IOException {
+    return readItem();
   }
 
   public ConnectMsgRes processConnectResMsg() throws IOException{
     boolean status = ConvertUtil.byteToBoolean((byte)inputStream.read());
     inputStream.read();
-    int contentLen = inputStream.readInt();
-    inputStream.read();
-    byte[] contentBytes = new byte[contentLen];
-    inputStream.read(contentBytes, 0, contentLen);
-    return new ConnectMsgRes(status, new String(contentBytes));
+    String content = readItem();
+    return new ConnectMsgRes(status, content);
   }
+
+  public DirectMsg processDirectMsg() throws IOException{
+    String sender = readItem();
+    inputStream.read();
+    String recipient = readItem();
+    inputStream.read();
+    String content = readItem();
+    return new DirectMsg(sender, recipient, content);
+  }
+
+  public QueryRes processQueryMsg() throws IOException{
+    int userNum = inputStream.readInt();
+    List<String> usernames = new ArrayList<>();
+    for (int i = 0; i < userNum - 1; i++) {
+      usernames.add(readItem());
+      inputStream.read();
+    }
+    usernames.add(readItem());
+    return new QueryRes(usernames);
+  }
+
   public DataInputStream getInputStream() {
     return inputStream;
   }
