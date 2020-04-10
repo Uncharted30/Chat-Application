@@ -50,11 +50,10 @@ public class MessageProcessor {
   public QueryRes processQueryMsg() throws IOException{
     int userNum = inputStream.readInt();
     List<String> usernames = new ArrayList<>();
-    for (int i = 0; i < userNum - 1; i++) {
-      usernames.add(readItem());
+    for (int i = 0; i < userNum; i++) {
       inputStream.read();
+      usernames.add(readItem());
     }
-    usernames.add(readItem());
     return new QueryRes(usernames);
   }
 
