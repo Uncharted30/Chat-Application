@@ -31,4 +31,10 @@ public class ConstantsUtil {
 
   public static final Set<String> CMD_SET= new HashSet(Arrays.asList(HELP_CMD, LOG_OFF_CMD, SHOW_USERS_CMD, SEND_MESSAGE_CMD, BROADCAST_CMD, SEND_INSULT_CMD));
 
+  public static final int MSG_HEAD_LEN = 4;
+  public static final int MSG_SPLIT_LEN = 1;
+  public static final int MSG_SIZE_LEN = 4;
+
+  public static byte SPACE_BYTE = " ".getBytes()[0];
+
 }

@@ -42,7 +42,7 @@ public class SendMessage implements Runnable {
         byte[] msg = userInterface.getMessage();
         // write on the output stream
         if (msg.length > 0) {
-          System.out.println("write");
+          System.out.printf("write %d length bytes\n", msg.length);
           chatSocketOut.write(msg);
         }
       } catch (IOException e) {

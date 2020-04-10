@@ -1,6 +1,7 @@
 package client;
 
 import common.ConstantsUtil;
+import common.MessageConstuctor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,7 +44,7 @@ public class UserInterface {
       this.hasCMD = true;
     }
   }
-  private byte[] handleCommand() {
+  private byte[] handleCommand() throws IOException {
     byte[] msg;
     switch (this.currentCMD) {
       case ConstantsUtil.HELP_CMD:
@@ -80,33 +81,41 @@ public class UserInterface {
         + "!user: sends a SEND_INSULT message to the server, to be sent to the specified user");
     hasCMD = false;
     currentCMD = "";
-    return "sfsdf".getBytes();
+    return new byte[0];
   }
 
   private byte[] handleLogOffCommand() {
     hasCMD = false;
     currentCMD = "";
-    return new byte[0];
+    return MessageConstuctor.getLogOffMsg(username);
   }
   private byte[] handleShowUsersCommand() {
     hasCMD = false;
     currentCMD = "";
-    return new byte[0];
+    return MessageConstuctor.getQueryUsersMsg(username);
   }
-  private byte[] handleSendMessageCommand() {
+
+  private byte[] handleSendMessageCommand() throws IOException {
     System.out.println("Please Enter the username you want to send the message to:");
+    String receiver = stdIn.readLine();
+    System.out.println("Please Enter the message you want to send:");
+    String message = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return new byte[0];
+    return MessageConstuctor.getDirectMsg(this.username, receiver, message);
   }
-  private byte[] handleBroadCastCommand() {
+  private byte[] handleBroadCastCommand() throws IOException {
+    System.out.println("Please Enter the message you want to send:");
+    String message = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return new byte[0];
+    return MessageConstuctor.getBroadcastMsg(this.username, message);
   }
-  private byte[] handleSendInsultCommand() {
+  private byte[] handleSendInsultCommand() throws IOException {
+    System.out.println("Please Enter the username you want to send the insult to:");
+    String receiver = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return new byte[0];
+    return MessageConstuctor.getInsultMsg(this.username, receiver);
   }
 }

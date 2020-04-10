@@ -1,5 +1,6 @@
 package server;
 // A Java program for a Server
+import common.MessageProcessor;
 import java.net.*;
 import java.io.*;
 
@@ -34,10 +35,7 @@ public class Server
       {
         try
         {
-            byte[] message = new byte[10];
-            in.readFully(message, 0, message.length);
-            //todo: pares input from chat socket
-            System.out.println(new String(message));
+          in.read();
         }
         catch(IOException i)
         {

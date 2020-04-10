@@ -20,8 +20,4 @@ public class ConvertUtil {
     }
     return ByteBuffer.wrap(elem, 0, 4).getInt();
   }
-
-  public static void main(String[] args) {
-
-  }
 }

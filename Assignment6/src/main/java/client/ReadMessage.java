@@ -30,6 +30,7 @@ public class ReadMessage implements Runnable {
     while (loginStatus.isLogin()) {
       try {
         int messageLen= chatSocketIn.readInt();
+
         if (messageLen > 0) {
           byte[] message = new byte[messageLen];
           chatSocketIn.readFully(message, 0, message.length);

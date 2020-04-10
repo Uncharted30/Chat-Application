@@ -1,6 +1,7 @@
 package client;
 
 // A Java program for a Client
+import common.MessageConstuctor;
 import java.net.*;
 import java.io.*;
 import java.util.concurrent.CountDownLatch;
@@ -37,6 +38,13 @@ public class Client {
   }
 
   public void run() {
+
+    // connect firstly
+    //todo: connect firstly
+//    if (!connect()) {
+//      return;
+//    }
+
     // sendMessage thread
     SendMessage sendMessage = new SendMessage(username, stdIn, chatSocketOut, loginStatus);
     // readMessage thread
@@ -63,6 +71,18 @@ public class Client {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
+  }
+
+  private boolean connect() {
+    // send connect msg
+    byte[] connectMsg = MessageConstuctor.getConnectMsg(username);
+    try {
+      chatSocketOut.write(connectMsg);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
   }
 
   public String getUsername() {
