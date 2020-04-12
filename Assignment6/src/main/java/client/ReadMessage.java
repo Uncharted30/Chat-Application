@@ -2,6 +2,7 @@ package client;
 
 import client.bean.LoginStatus;
 import common.CommonConstants;
+import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
 import common.beans.DirectMsg;
 import common.beans.QueryRes;
@@ -55,6 +56,8 @@ public class ReadMessage implements Runnable {
           case CommonConstants.FAILED_MESSAGE:
             failedMsgHandler(messageProcessor.processFailedMsg());
             break;
+          case CommonConstants.BROADCAST_MESSAGE:
+            broadcastMsgHandler(messageProcessor.processBroadcastMsg());
           default:
             System.out.println("Wrong message!");
         }
@@ -86,6 +89,10 @@ public class ReadMessage implements Runnable {
   private void directMsgHandler(DirectMsg directMsg) {
     System.out.println("Receive Message From " + directMsg.getSender() + ":");
     System.out.println(directMsg.getContent());
+  }
+  private void broadcastMsgHandler(BroadcastMsg broadcastMsg) {
+    System.out.println("Broadcast Message From:");
+    System.out.println(broadcastMsg.getContent());
   }
 
   private void queryResHandler(QueryRes queryRes) {

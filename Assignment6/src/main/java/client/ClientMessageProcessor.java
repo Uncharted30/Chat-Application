@@ -1,6 +1,7 @@
 package client;
 
 import common.ConvertUtil;
+import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
 import common.beans.DirectMsg;
 import common.beans.QueryRes;
@@ -49,6 +50,13 @@ public class ClientMessageProcessor {
     inputStream.read();
     String content = readItem();
     return new DirectMsg(sender, recipient, content);
+  }
+
+  public BroadcastMsg processBroadcastMsg() throws IOException{
+    String sender = readItem();
+    inputStream.read();
+    String content = readItem();
+    return new BroadcastMsg(sender, content);
   }
 
   public QueryRes processQueryMsg() throws IOException{
