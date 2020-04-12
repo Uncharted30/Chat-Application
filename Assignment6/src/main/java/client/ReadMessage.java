@@ -44,7 +44,7 @@ public class ReadMessage implements Runnable {
         System.out.println(head);
         switch (head) {
           case CommonConstants.CONNECT_RESPONSE:
-            disconnectHandler(messageProcessor.processConnectResMsg());
+            disconnectHandler(messageProcessor.processDisconnectResMsg());
             break;
           case CommonConstants.QUERY_USER_RESPONSE:
             queryResHandler(messageProcessor.processQueryMsg());
@@ -74,7 +74,7 @@ public class ReadMessage implements Runnable {
 
   private void disconnectHandler(ConnectRes disconnectMsgRes) {
     System.out.println(disconnectMsgRes.getContent());
-    if (disconnectMsgRes.getStatus()) {
+    if (!disconnectMsgRes.getStatus()) {
       loginStatus.setLogin(false);
     }
   }

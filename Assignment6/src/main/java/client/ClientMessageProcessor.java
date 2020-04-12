@@ -24,8 +24,11 @@ public class ClientMessageProcessor {
     return new String(item);
   }
 
-  public String processLogOffMsg() throws IOException {
-    return readItem();
+  public ConnectRes processDisconnectResMsg() throws IOException {
+    boolean status = ConvertUtil.byteToBoolean((byte)inputStream.read());
+    inputStream.read();
+    String content = readItem();
+    return new ConnectRes(status, content);
   }
 
   public String processFailedMsg() throws IOException {
