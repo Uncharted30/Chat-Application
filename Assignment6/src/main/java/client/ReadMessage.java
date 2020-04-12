@@ -58,6 +58,7 @@ public class ReadMessage implements Runnable {
             break;
           case CommonConstants.BROADCAST_MESSAGE:
             broadcastMsgHandler(messageProcessor.processBroadcastMsg());
+            break;
           default:
             System.out.println("Wrong message!");
         }
@@ -90,6 +91,7 @@ public class ReadMessage implements Runnable {
     System.out.println("Receive Message From " + directMsg.getSender() + ":");
     System.out.println(directMsg.getContent());
   }
+
   private void broadcastMsgHandler(BroadcastMsg broadcastMsg) {
     System.out.println("Broadcast Message From:");
     System.out.println(broadcastMsg.getContent());
