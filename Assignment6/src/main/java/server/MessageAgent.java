@@ -7,8 +7,8 @@ import common.beans.UserQuery;
 import common.beans.interfaces.ChatRoomProtocol;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 public class MessageAgent {
 
@@ -18,19 +18,34 @@ public class MessageAgent {
     this.clients = clients;
   }
 
-  public void sendBroadcastMessage(ChatRoomProtocol message) throws IOException {
-    for (ClientHandler clientHandler : this.clients.values()) {
-      clientHandler.sendMessage(message.toByteArray());
+  public boolean sendBroadcastMessage(Message message) throws IOException {
+    if (this.clients.containsKey(message.getSender())) {
+      for (ClientHandler clientHandler : this.clients.values()) {
+        clientHandler.sendMessage(message.toByteArray());
+      }
+      return true;
     }
+    return false;
   }
 
-  public void sendDirectMessage(Message message) throws IOException {
-    this.clients.get(message.getRecipient()).sendMessage(message.toByteArray());
+  public boolean sendDirectMessage(Message message) throws IOException {
+    if (this.clients.containsKey(message.getSender()) && this.clients
+        .containsKey(message.getRecipient())) {
+      this.clients.get(message.getRecipient()).sendMessage(message.toByteArray());
+      return true;
+    }
+    return false;
   }
 
-  public void sendUserList(UserQuery userQuery) throws IOException {
-    this.clients.get(userQuery.getUsername())
-        .sendMessage(new QueryRes(new ArrayList<>(this.clients.keySet())).toByteArray());
+  public boolean sendUserList(UserQuery userQuery) throws IOException {
+    if (this.clients.containsKey(userQuery.getUsername())) {
+      Set<String> users = this.clients.keySet();
+      users.remove(userQuery.getUsername());
+      this.clients.get(userQuery.getUsername())
+          .sendMessage(new QueryRes(new ArrayList<>(users)).toByteArray());
+      return true;
+    }
+    return false;
   }
 
   public void disconnect(DisconnectMsg disconnectMsg) {

@@ -12,7 +12,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 
 public class ClientHandler implements Runnable {
 
@@ -81,63 +80,65 @@ public class ClientHandler implements Runnable {
       this.messageAgent.disconnect(disconnectMsg);
       this.disconnect();
     } catch (IOException e) {
-      FailedMsg failedMsg = new FailedMsg(
+      System.err.println(e.getMessage());
+      this.sendFailedMessage(
           "Exception occurred during disconnecting you from the server, please try again. " + e
               .getMessage());
-      try {
-        this.sendMessage(failedMsg.toByteArray());
-      } catch (IOException ex) {
-        ex.printStackTrace();
-      }
     }
   }
 
   private void handleUserQuery() {
     try {
       UserQuery userQuery = this.messageProcessor.processUserQuery();
-      this.messageAgent.sendUserList(userQuery);
-    } catch (IOException e) {
-      e.printStackTrace();
-      FailedMsg failedMsg = new FailedMsg(
-          "Exception occurred during handling the request. " + e.getMessage());
-      try {
-        this.sendMessage(failedMsg.toByteArray());
-      } catch (IOException ex) {
-        ex.printStackTrace();
+      boolean res = this.messageAgent.sendUserList(userQuery);
+      if (!res) {
+        this.sendFailedMessage("You are not connected.");
       }
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+      this.sendFailedMessage("Exception occurred during handling the request. " + e.getMessage());
     }
   }
 
   private void handleBroadcastMessage() {
     try {
       BroadcastMsg broadcastMsg = this.messageProcessor.processBroadcastMsg();
-      this.messageAgent.sendBroadcastMessage(broadcastMsg);
-    } catch (IOException e) {
-      FailedMsg failedMsg = new FailedMsg(
-          "Exception occurred when sending the message. " + e.getMessage());
-      try {
-        this.sendMessage(failedMsg.toByteArray());
-      } catch (IOException ex) {
-        ex.printStackTrace();
+      boolean res = this.messageAgent.sendBroadcastMessage(broadcastMsg);
+      if (!res) {
+        this.sendFailedMessage("Invalid sender!");
       }
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+      this.sendFailedMessage("Exception occurred when sending the message. " + e.getMessage());
     }
   }
 
   private void handleDirectMessage() {
     try {
       DirectMsg directMsg = this.messageProcessor.processDirectMsg();
-      this.messageAgent.sendDirectMessage(directMsg);
+      boolean res = this.messageAgent.sendDirectMessage(directMsg);
+      if (!res) {
+        this.sendFailedMessage("Invalid sender or recipient.");
+      }
     } catch (IOException e) {
+      System.err.println(e.getMessage());
       e.printStackTrace();
     }
+  }
 
+  private void sendFailedMessage(String message) {
+    FailedMsg failedMsg = new FailedMsg(message);
+    try {
+      this.sendMessage(failedMsg.toByteArray());
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
   }
 
   @Override
   public void run() {
     try {
       this.listen();
-      System.out.println("Threading shutting down...");
     } catch (IOException e) {
       e.printStackTrace();
     }
