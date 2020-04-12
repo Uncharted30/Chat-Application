@@ -44,7 +44,7 @@ public class ConnectRes implements ChatRoomProtocol {
   }
 
   @Override
-  public void print() {
-
+  public String getMessage() {
+    return null;
   }
 }

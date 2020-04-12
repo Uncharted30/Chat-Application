@@ -4,5 +4,5 @@ public interface ChatRoomProtocol {
 
   byte[] toByteArray();
 
-  void print();
+  String getMessage();
 }

@@ -3,6 +3,7 @@ package server;
 import common.CommonConstants;
 import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
+import common.beans.DirectMsg;
 import common.beans.DisconnectMsg;
 import common.beans.FailedMsg;
 import common.beans.UserQuery;
@@ -38,16 +39,16 @@ public class ClientHandler implements Runnable {
         this.dataInputStream.read();
         switch (header) {
           case (CommonConstants.DISCONNECT_MESSAGE):
-            handleDisconnectMsg();
+            this.handleDisconnectMsg();
             break;
           case (CommonConstants.QUERY_CONNECTED_USERS):
-            handleUserQuery();
+            this.handleUserQuery();
             break;
           case (CommonConstants.BROADCAST_MESSAGE):
-            handleBroadcastMessage();
+            this.handleBroadcastMessage();
             break;
           case (CommonConstants.DIRECT_MESSAGE):
-            System.out.println("Direct!");
+            this.handleDirectMessage();
             break;
           case (CommonConstants.SEND_INSULT):
             System.out.println("INSULT!");
@@ -64,14 +65,14 @@ public class ClientHandler implements Runnable {
     this.socket.close();
   }
 
-  public void disconnect() {
+  public void disconnect() throws IOException {
+    this.sendMessage(new ConnectRes(false, "You are no longer connected.").toByteArray());
     this.connected = false;
   }
 
   public void sendMessage(byte[] message) throws IOException {
     this.dataOutputStream.write(message);
-    this.dataOutputStream.flush();
-    System.out.println(Arrays.toString(message));
+    System.out.println(new String(message));
   }
 
   private void handleDisconnectMsg() {
@@ -79,7 +80,6 @@ public class ClientHandler implements Runnable {
       DisconnectMsg disconnectMsg = this.messageProcessor.processDisconnectMsg();
       this.messageAgent.disconnect(disconnectMsg);
       this.disconnect();
-      this.sendMessage(new ConnectRes("You are no longer connected.").toByteArray());
     } catch (IOException e) {
       FailedMsg failedMsg = new FailedMsg(
           "Exception occurred during disconnecting you from the server, please try again. " + e
@@ -123,10 +123,21 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  private void handleDirectMessage() {
+    try {
+      DirectMsg directMsg = this.messageProcessor.processDirectMsg();
+      this.messageAgent.sendDirectMessage(directMsg);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
   @Override
   public void run() {
     try {
       this.listen();
+      System.out.println("Threading shutting down...");
     } catch (IOException e) {
       e.printStackTrace();
     }

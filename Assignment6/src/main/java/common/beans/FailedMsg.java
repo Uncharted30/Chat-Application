@@ -27,7 +27,8 @@ public class FailedMsg implements ChatRoomProtocol {
   }
 
   @Override
-  public void print() {
-
+  public String getMessage() {
+    return content;
   }
+
 }

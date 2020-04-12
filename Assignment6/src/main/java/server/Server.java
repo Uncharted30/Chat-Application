@@ -2,7 +2,6 @@ package server;
 
 import common.CommonConstants;
 import common.beans.ConnectRes;
-import common.beans.FailedMsg;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,6 +49,14 @@ public class Server extends Thread {
 
   public synchronized void stopServer() {
     this.isRunning = false;
+    this.executor.shutdown();
+    for (ClientHandler clientHandler : clients.values()) {
+      try {
+        clientHandler.disconnect();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private void sendConnectionResponse(Socket socket, boolean status, String msg)

@@ -1,11 +1,15 @@
 package common.beans;
 
+import common.CommonConstants;
+import common.utils.ArrayUtil;
+import java.util.Arrays;
+
 public class DirectMsg extends Message {
   private String sender;
   private String recipient;
-  private String content;
+  private byte[] content;
 
-  public DirectMsg(String sender, String recipient, String content) {
+  public DirectMsg(String sender, String recipient, byte[] content) {
     this.sender = sender;
     this.recipient = recipient;
     this.content = content;
@@ -21,17 +25,19 @@ public class DirectMsg extends Message {
     return recipient;
   }
 
-  public String getContent() {
+  public byte[] getContent() {
     return content;
   }
 
   @Override
   public byte[] toByteArray() {
-    return new byte[0];
+    byte[] bytes = this
+        .toByteArray(CommonConstants.DIRECT_MESSAGE, Arrays.asList(this.sender, this.recipient));
+    return ArrayUtil.concat(Arrays.asList(bytes, this.content));
   }
 
   @Override
-  public void print() {
-
+  public String getMessage() {
+    return new String(content);
   }
 }

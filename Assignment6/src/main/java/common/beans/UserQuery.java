@@ -20,7 +20,7 @@ public class UserQuery implements ChatRoomProtocol {
   }
 
   @Override
-  public void print() {
-    System.out.println("User " + this.username + "is requesting user list.");
+  public String getMessage() {
+    return "User " + this.username + "is requesting user list.";
   }
 }

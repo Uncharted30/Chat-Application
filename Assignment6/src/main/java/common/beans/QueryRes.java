@@ -23,12 +23,7 @@ public class QueryRes extends AbstractChatRoomProtocol {
   }
 
   @Override
-  public void print() {
-
-  }
-
-  public static void main(String[] args) {
-    QueryRes queryRes = new QueryRes(Arrays.asList("Pan", "Lyh"));
-    System.out.println(Arrays.toString(queryRes.toByteArray()));
+  public String getMessage() {
+    return null;
   }
 }

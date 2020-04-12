@@ -33,7 +33,7 @@ public class ServerMessageProcessor {
   public BroadcastMsg processBroadcastMsg() throws IOException {
     String sender = this.readString();
     this.dataInputStream.read();
-    String content = this.readString();
+    byte[] content = this.readByteArray();
     return new BroadcastMsg(sender, content);
   }
 
@@ -42,7 +42,7 @@ public class ServerMessageProcessor {
     this.dataInputStream.read();
     String recipient = this.readString();
     this.dataInputStream.read();
-    String content = this.readString();
+    byte[] content = this.readByteArray();
     return new DirectMsg(sender, recipient, content);
   }
 
@@ -59,5 +59,13 @@ public class ServerMessageProcessor {
     byte[] usernameBytes = new byte[len];
     this.dataInputStream.read(usernameBytes);
     return new String(usernameBytes, 0, len);
+  }
+
+  private byte[] readByteArray() throws IOException {
+    int len = this.dataInputStream.readInt();
+    this.dataInputStream.read();
+    byte[] result = new byte[len];
+    this.dataInputStream.read(result, 0, len);
+    return result;
   }
 }

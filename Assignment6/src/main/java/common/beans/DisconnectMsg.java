@@ -20,7 +20,7 @@ public class DisconnectMsg extends AbstractChatRoomProtocol {
   }
 
   @Override
-  public void print() {
-    System.out.println("User " + this.username + "is trying to disconnect.");
+  public String getMessage() {
+    return "User " + this.username + "is trying to disconnect.";
   }
 }

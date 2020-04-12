@@ -48,14 +48,14 @@ public class ClientMessageProcessor {
     inputStream.read();
     String recipient = readItem();
     inputStream.read();
-    String content = readItem();
+    byte[] content = this.readByteArray();
     return new DirectMsg(sender, recipient, content);
   }
 
   public BroadcastMsg processBroadcastMsg() throws IOException{
     String sender = readItem();
     inputStream.read();
-    String content = readItem();
+    byte[] content = this.readByteArray();
     return new BroadcastMsg(sender, content);
   }
 
@@ -67,6 +67,15 @@ public class ClientMessageProcessor {
       users.add(readItem());
     }
     return new QueryRes(users);
+  }
+
+  private byte[] readByteArray() throws IOException {
+    int len = this.inputStream.readInt();
+    this.inputStream.read();
+    System.out.println(len);
+    byte[] result = new byte[len];
+    this.inputStream.read(result, 0, len);
+    return result;
   }
 
   public DataInputStream getInputStream() {

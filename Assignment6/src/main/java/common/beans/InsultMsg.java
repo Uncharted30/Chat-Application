@@ -28,7 +28,7 @@ public class InsultMsg extends Message {
   }
 
   @Override
-  public void print() {
-
+  public String getMessage() {
+    return null;
   }
 }

@@ -27,7 +27,8 @@ public class ReadMessage implements Runnable {
 
   private CountDownLatch countDownLatch;
 
-  public ReadMessage(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus, CountDownLatch countDownLatch) {
+  public ReadMessage(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus,
+      CountDownLatch countDownLatch) {
     this.chatSocketIn = chatSocketIn;
     this.loginStatus = loginStatus;
     this.chatSocket = chatSocket;
@@ -88,13 +89,12 @@ public class ReadMessage implements Runnable {
   }
 
   private void directMsgHandler(DirectMsg directMsg) {
-    System.out.println("Receive Message From " + directMsg.getSender() + ":");
-    System.out.println(directMsg.getContent());
+    System.out
+        .println(directMsg.getSender() + " sent you a direct message: " + directMsg.getMessage());
   }
 
   private void broadcastMsgHandler(BroadcastMsg broadcastMsg) {
-    System.out.println("Broadcast Message From:");
-    System.out.println(broadcastMsg.getContent());
+    System.out.println(broadcastMsg.getSender() + ": " + broadcastMsg.getMessage());
   }
 
   private void queryResHandler(QueryRes queryRes) {
