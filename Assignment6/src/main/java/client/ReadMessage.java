@@ -7,7 +7,9 @@ import common.beans.DirectMsg;
 import common.beans.QueryRes;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class ReadMessage implements Runnable {
 
@@ -20,17 +22,23 @@ public class ReadMessage implements Runnable {
    */
   private volatile LoginStatus loginStatus;
 
-  public ReadMessage(DataInputStream chatSocketIn, LoginStatus loginStatus) {
+  private Socket chatSocket;
+
+  private CountDownLatch countDownLatch;
+
+  public ReadMessage(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus, CountDownLatch countDownLatch) {
     this.chatSocketIn = chatSocketIn;
     this.loginStatus = loginStatus;
+    this.chatSocket = chatSocket;
+    this.countDownLatch = countDownLatch;
   }
 
   @Override
   public void run() {
     System.out.println("Client start running...");
     ClientMessageProcessor messageProcessor = new ClientMessageProcessor(chatSocketIn);
-    while (loginStatus.isLogin()) {
-      try {
+    try {
+      while (loginStatus.isLogin()) {
         int head = chatSocketIn.readInt();
         chatSocketIn.read();
         System.out.println(head);
@@ -50,6 +58,14 @@ public class ReadMessage implements Runnable {
           default:
             System.out.println("Wrong message!");
         }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      countDownLatch.countDown();
+      try {
+        chatSocketIn.close();
+        chatSocket.close();
       } catch (IOException e) {
         e.printStackTrace();
       }

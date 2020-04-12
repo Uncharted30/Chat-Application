@@ -49,29 +49,13 @@ public class Client {
     }
 
     // sendMessage thread
-    SendMessage sendMessage = new SendMessage(username, stdIn, chatSocketOut, loginStatus);
+    SendMessage sendMessage = new SendMessage(username, stdIn, chatSocketOut, loginStatus, countDownLatch);
     // readMessage thread
-    ReadMessage readMessage = new ReadMessage(chatSocketIn, loginStatus);
+    ReadMessage readMessage = new ReadMessage(chatSocketIn, chatSocket, loginStatus, countDownLatch);
 
-    try {
-      new Thread(sendMessage).start();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      stdIn.close();
-      chatSocketOut.close();
-      countDownLatch.countDown();
-    }
+    new Thread(sendMessage).start();
 
-    try {
-      new Thread(readMessage).start();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      chatSocketIn.close();
-      chatSocket.close();
-      countDownLatch.countDown();
-    }
+    new Thread(readMessage).start();
 
     try {
       countDownLatch.await();
