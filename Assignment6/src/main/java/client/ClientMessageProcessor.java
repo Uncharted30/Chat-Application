@@ -72,7 +72,7 @@ public class ClientMessageProcessor {
   private byte[] readByteArray() throws IOException {
     int len = this.inputStream.readInt();
     this.inputStream.read();
-    System.out.println(len);
+//    System.out.println(len);
     byte[] result = new byte[len];
     this.inputStream.read(result, 0, len);
     return result;

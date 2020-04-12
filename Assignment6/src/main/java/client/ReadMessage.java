@@ -6,6 +6,7 @@ import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
 import common.beans.DirectMsg;
 import common.beans.QueryRes;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -25,6 +26,7 @@ public class ReadMessage implements Runnable {
 
   private Socket chatSocket;
 
+
   private CountDownLatch countDownLatch;
 
   public ReadMessage(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus,
@@ -43,7 +45,7 @@ public class ReadMessage implements Runnable {
       while (loginStatus.isLogin()) {
         int head = chatSocketIn.readInt();
         chatSocketIn.read();
-        System.out.println(head);
+//        System.out.println(head);
         switch (head) {
           case CommonConstants.CONNECT_RESPONSE:
             disconnectHandler(messageProcessor.processDisconnectResMsg());
@@ -81,6 +83,7 @@ public class ReadMessage implements Runnable {
     System.out.println(disconnectMsgRes.getContent());
     if (!disconnectMsgRes.getStatus()) {
       loginStatus.setLogin(false);
+      System.out.println("Press enter to quit!");
     }
   }
 

@@ -55,8 +55,8 @@ public class SendMessage implements Runnable {
     } finally {
       countDownLatch.countDown();
       try {
-        chatSocketOut.close();
         stdIn.close();
+        chatSocketOut.close();
       } catch (IOException e) {
         e.printStackTrace();
       }
