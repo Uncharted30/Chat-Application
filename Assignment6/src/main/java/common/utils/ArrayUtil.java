@@ -1,5 +1,6 @@
-package server.utils;
+package common.utils;
 
+import common.CommonConstants;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,15 +23,18 @@ public class ArrayUtil {
     if (list.isEmpty()) return new byte[0];
     if (list.size() == 1) return list.get(0);
 
-    int len = 0;
-    for (byte[] arr : list) {
-      len += arr.length;
+    byte[] first = list.get(0);
+
+    int len = first.length;
+    for (int i = 1; i < list.size(); i++) {
+      len += list.get(i).length + 1;
     }
 
-    byte[] first = list.get(0);
     byte[] result = Arrays.copyOf(first, len);
     int offset = first.length;
-    for (byte[] arr : list) {
+    for (int i = 1; i < list.size(); i++) {
+      byte[] arr = list.get(i);
+      result[offset++] = CommonConstants.SPACE_BYTE;
       System.arraycopy(arr, 0, result, offset, arr.length);
       offset += arr.length;
     }

@@ -1,52 +1,107 @@
 package server;
-// A Java program for a Server
 
-import common.MessageProcessor;
-import java.net.*;
-import java.io.*;
+import common.CommonConstants;
+import common.beans.ConnectRes;
+import common.beans.FailedMsg;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Server {
+public class Server extends Thread {
 
-  //initialize socket and input stream
-  private Socket socket;
-  private ServerSocket server;
-  private DataInputStream in;
+  private int port;
+  private ServerSocket serverSocket;
+  private volatile Boolean isRunning;
+  private Map<String, ClientHandler> clients;
+  private ExecutorService executor;
+  private MessageAgent messageAgent;
 
-  // constructor with port
-  public Server(int port) {
-    // starts server and waits for a connection
-    try {
-      server = new ServerSocket(0);
-      System.out.println("Server started at Port" + server.getLocalPort());
-
-      System.out.println("Waiting for a client ...");
-
-      socket = server.accept();
-      System.out.println("Client accepted");
-
-      // takes input from the client socket
-      in = new DataInputStream(socket.getInputStream());
-
-      String line = "";
-
-      // reads message from client until "Over" is sent
-      while (true) {
-        try {
-          System.out.println(in.readInt());
-          in.read();
-          MessageProcessor messageProcessor = new MessageProcessor(in);
-          System.out.println(messageProcessor.processLogOffMsg());
-        } catch (IOException i) {
-          System.out.println(i);
-        }
-      }
-    } catch (IOException i) {
-      System.out.println(i);
+  public Server(int port) throws IOException {
+    if (port <= 0 || port > 0xFFFF) {
+      this.port = CommonConstants.DEFAULT_PORT;
+    } else {
+      this.port = port;
     }
+    this.serverSocket = new ServerSocket(this.port);
+    this.port = this.serverSocket.getLocalPort();
+    serverSocket.setSoTimeout(CommonConstants.ACCEPT_TIMEOUT);
+    this.clients = new HashMap<>();
+    this.executor = Executors.newFixedThreadPool(CommonConstants.MAX_CLIENTS);
+    this.messageAgent = new MessageAgent(this.clients);
   }
 
-  public static void main(String args[]) {
-    Server server = new Server(5000);
+  public Server() throws IOException {
+    this(0);
+  }
+
+  public synchronized void startServer() {
+    this.isRunning = true;
+    this.start();
+    System.out.printf("The server is listening on port %d.\n", this.port);
+  }
+
+  public synchronized void stopServer() {
+    this.isRunning = false;
+  }
+
+  private void sendConnectionResponse(Socket socket, boolean status, String msg)
+      throws IOException {
+    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    ConnectRes connectRes = new ConnectRes(status, msg);
+    dataOutputStream.write(connectRes.toByteArray());
+    System.out.println(Arrays.toString(connectRes.toByteArray()));
+  }
+
+  @Override
+  public void run() {
+    try {
+      while (this.isRunning) {
+        Socket socket = null;
+        try {
+          socket = this.serverSocket.accept();
+        } catch (SocketTimeoutException e) {
+//          e.printStackTrace();
+        }
+
+        if (socket != null) {
+          if (clients.size() < CommonConstants.MAX_CLIENTS) {
+            socket.setSoTimeout(CommonConstants.CONNECTION_TIMEOUT);
+            try {
+              DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+              int header = dataInputStream.readInt();
+              dataInputStream.read();
+              if (header == CommonConstants.CONNECT_MESSAGE) {
+                int len = dataInputStream.readInt();
+                dataInputStream.read();
+                byte[] usernameByte = new byte[len];
+                dataInputStream.read(usernameByte, 0, len);
+                String username = new String(usernameByte);
+                ClientHandler clientHandler = new ClientHandler(socket, this.messageAgent);
+                this.executor.execute(clientHandler);
+                this.sendConnectionResponse(socket, true,
+                    "There are " + this.clients.size() + " other connected clients.");
+                this.clients.put(username, clientHandler);
+              }
+            } catch (SocketTimeoutException e) {
+              this.sendConnectionResponse(socket, false, "Connection timeout!");
+            }
+          } else if (clients.size() > CommonConstants.MAX_CLIENTS) {
+            this.sendConnectionResponse(socket, true,
+                "Connection rejected. Server has reached its capacity.");
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
 

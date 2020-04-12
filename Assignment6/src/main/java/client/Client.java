@@ -1,11 +1,10 @@
 package client;
 
 // A Java program for a Client
-import client.bean.ConnectMsgRes;
 import client.bean.LoginStatus;
-import common.ConstantsUtil;
+import common.CommonConstants;
 import common.MessageConstuctor;
-import common.MessageProcessor;
+import common.beans.ConnectRes;
 import java.net.*;
 import java.io.*;
 import java.util.Arrays;
@@ -44,7 +43,7 @@ public class Client {
 
   public void run() throws IOException {
 
-    // connect firstly
+    // connect first
     if (!connect()) {
       return;
     }
@@ -52,10 +51,10 @@ public class Client {
     // sendMessage thread
     SendMessage sendMessage = new SendMessage(username, stdIn, chatSocketOut, loginStatus);
     // readMessage thread
-    ReadMessage readMessage = new ReadMessage(chatSocket, chatSocketIn, chatSocketOut, loginStatus);
+    ReadMessage readMessage = new ReadMessage(chatSocketIn, loginStatus);
 
     try {
-      sendMessage.run();
+      new Thread(sendMessage).start();
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
@@ -65,7 +64,7 @@ public class Client {
     }
 
     try {
-      readMessage.run();
+      new Thread(readMessage).start();
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
@@ -83,17 +82,17 @@ public class Client {
 
   private boolean connect() {
     // send connect msg
-    byte[] connectMsg = MessageConstuctor.getTypeOneMsg(Arrays.asList(username), ConstantsUtil.CONNECT_MESSAGE);
+    byte[] connectMsg = MessageConstuctor.getTypeOneMsg(Arrays.asList(username), CommonConstants.CONNECT_MESSAGE);
     try {
       chatSocketOut.write(connectMsg);
       // read head
       chatSocketIn.readInt();
       // read space
       chatSocketIn.read();
-      MessageProcessor messageProcessor = new MessageProcessor(chatSocketIn);
-      ConnectMsgRes connectMsgRes = messageProcessor.processConnectResMsg();
-      System.out.println(connectMsgRes.getContent());
-      return connectMsgRes.isStatus();
+      ClientMessageProcessor messageProcessor = new ClientMessageProcessor(chatSocketIn);
+      ConnectRes connectRes = messageProcessor.processConnectResMsg();
+      System.out.println(connectRes.getContent());
+      return connectRes.getStatus();
     } catch (IOException e) {
       e.printStackTrace();
       return false;

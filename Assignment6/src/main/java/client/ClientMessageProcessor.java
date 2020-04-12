@@ -1,17 +1,18 @@
-package common;
+package client;
 
-import client.bean.ConnectMsgRes;
-import client.bean.DirectMsg;
-import client.bean.QueryRes;
+import common.ConvertUtil;
+import common.beans.ConnectRes;
+import common.beans.DirectMsg;
+import common.beans.QueryRes;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageProcessor {
+public class ClientMessageProcessor {
   private DataInputStream inputStream;
 
-  public MessageProcessor(DataInputStream inputStream) {
+  public ClientMessageProcessor(DataInputStream inputStream) {
     this.inputStream = inputStream;
   }
 
@@ -31,11 +32,11 @@ public class MessageProcessor {
     return readItem();
   }
 
-  public ConnectMsgRes processConnectResMsg() throws IOException{
+  public ConnectRes processConnectResMsg() throws IOException{
     boolean status = ConvertUtil.byteToBoolean((byte)inputStream.read());
     inputStream.read();
     String content = readItem();
-    return new ConnectMsgRes(status, content);
+    return new ConnectRes(status, content);
   }
 
   public DirectMsg processDirectMsg() throws IOException{
@@ -49,12 +50,12 @@ public class MessageProcessor {
 
   public QueryRes processQueryMsg() throws IOException{
     int userNum = inputStream.readInt();
-    List<String> usernames = new ArrayList<>();
+    List<String> users = new ArrayList<>();
     for (int i = 0; i < userNum; i++) {
       inputStream.read();
-      usernames.add(readItem());
+      users.add(readItem());
     }
-    return new QueryRes(usernames);
+    return new QueryRes(users);
   }
 
   public DataInputStream getInputStream() {

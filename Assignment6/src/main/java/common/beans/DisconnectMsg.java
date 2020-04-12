@@ -1,6 +1,8 @@
-package common.beans.requests;
+package common.beans;
 
-public class DisconnectMsg extends Request {
+import common.beans.interfaces.ChatRoomProtocol;
+
+public class DisconnectMsg extends AbstractChatRoomProtocol {
 
   private String username;
 
@@ -18,7 +20,7 @@ public class DisconnectMsg extends Request {
   }
 
   @Override
-  public void log() {
+  public void print() {
     System.out.println("User " + this.username + "is trying to disconnect.");
   }
 }

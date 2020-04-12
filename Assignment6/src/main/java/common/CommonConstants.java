@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConstantsUtil {
+public class CommonConstants {
 
   public static final int CONNECT_MESSAGE = 19;
   public static final int CONNECT_RESPONSE = 20;
@@ -41,4 +41,12 @@ public class ConstantsUtil {
   public static byte SPACE_BYTE = " ".getBytes()[0];
 
   public static final int MAX_CLIENTS = 10;
+
+  public static final int ACCEPT_TIMEOUT = 3000;
+
+  public static final int BUFFER_TIMEOUT = 3000;
+
+  public static final int DEFAULT_PORT = 0;
+
+  public static final int CONNECTION_TIMEOUT = 5000;
 }

@@ -1,13 +1,17 @@
-package common.beans.response;
+package common.beans;
 
-import common.beans.requests.Request;
+import common.beans.interfaces.ChatRoomProtocol;
 
-public class UserQuery extends Request {
+public class UserQuery implements ChatRoomProtocol {
 
   private String username;
 
   public UserQuery(String username) {
     this.username = username;
+  }
+
+  public String getUsername() {
+    return username;
   }
 
   @Override
@@ -16,7 +20,7 @@ public class UserQuery extends Request {
   }
 
   @Override
-  public void log() {
+  public void print() {
     System.out.println("User " + this.username + "is requesting user list.");
   }
 }

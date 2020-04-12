@@ -1,6 +1,6 @@
 package client.util;
 
-import common.ConstantsUtil;
+import common.CommonConstants;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.cli.CommandLine;
@@ -20,10 +20,10 @@ public class CommandParser {
    * @throws ParseException when user's input is wrong
    */
   public static Map<String, String> parse(String[] args) throws ParseException {
-    Option option1 = new Option(ConstantsUtil.IP_OPTION, true, "ip address of the server that client want to connect to");
-    Option option2 = new Option(ConstantsUtil.PORT_OPTION, true,
+    Option option1 = new Option(CommonConstants.IP_OPTION, true, "ip address of the server that client want to connect to");
+    Option option2 = new Option(CommonConstants.PORT_OPTION, true,
         "port of the server that client want to connect to");
-    Option option3 = new Option(ConstantsUtil.USERNAME_OPTION, true, "username of the client");
+    Option option3 = new Option(CommonConstants.USERNAME_OPTION, true, "username of the client");
     Options options = new Options();
     options.addOption(option1);
     options.addOption(option2);
@@ -33,22 +33,22 @@ public class CommandParser {
 
     Map<String, String> map = new HashMap<>();
 
-    if (commands.hasOption(ConstantsUtil.IP_OPTION)) {
-      map.put(ConstantsUtil.IP_OPTION, commands.getOptionValue(ConstantsUtil.IP_OPTION));
+    if (commands.hasOption(CommonConstants.IP_OPTION)) {
+      map.put(CommonConstants.IP_OPTION, commands.getOptionValue(CommonConstants.IP_OPTION));
     } else {
-      map.put(ConstantsUtil.IP_OPTION, ConstantsUtil.DEFAULT_SERVER_IP);
+      map.put(CommonConstants.IP_OPTION, CommonConstants.DEFAULT_SERVER_IP);
     }
 
-    if (commands.hasOption(ConstantsUtil.PORT_OPTION)) {
-      map.put(ConstantsUtil.PORT_OPTION,
-          commands.getOptionValue(ConstantsUtil.PORT_OPTION));
+    if (commands.hasOption(CommonConstants.PORT_OPTION)) {
+      map.put(CommonConstants.PORT_OPTION,
+          commands.getOptionValue(CommonConstants.PORT_OPTION));
     } else {
       throw new ParseException("No port of the server to be specified");
     }
 
-    if (commands.hasOption(ConstantsUtil.USERNAME_OPTION)) {
-      map.put(ConstantsUtil.USERNAME_OPTION,
-          commands.getOptionValue(ConstantsUtil.USERNAME_OPTION));
+    if (commands.hasOption(CommonConstants.USERNAME_OPTION)) {
+      map.put(CommonConstants.USERNAME_OPTION,
+          commands.getOptionValue(CommonConstants.USERNAME_OPTION));
     } else {
       throw new ParseException("No username of the client to be specified");
     }

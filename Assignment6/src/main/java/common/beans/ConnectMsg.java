@@ -1,6 +1,8 @@
-package common.beans.requests;
+package common.beans;
 
-public class ConnectMsg extends Request {
+import common.beans.interfaces.ChatRoomProtocol;
+
+public class ConnectMsg extends AbstractChatRoomProtocol {
 
   String username;
 
@@ -18,7 +20,7 @@ public class ConnectMsg extends Request {
   }
 
   @Override
-  public void log() {
+  public void print() {
     System.out.println("User " + this.username + " is trying to connect to the server.");
   }
 }

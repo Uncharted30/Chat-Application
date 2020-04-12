@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 import org.apache.commons.cli.ParseException;
 
-public class Runner {
+public class ClientRunner {
 
   public static void main(String[] args) {
     try {

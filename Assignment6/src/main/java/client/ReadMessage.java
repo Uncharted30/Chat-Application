@@ -1,15 +1,12 @@
 package client;
 
-import client.bean.ConnectMsgRes;
-import client.bean.DirectMsg;
 import client.bean.LoginStatus;
-import client.bean.QueryRes;
-import common.ConstantsUtil;
-import common.MessageProcessor;
+import common.CommonConstants;
+import common.beans.ConnectRes;
+import common.beans.DirectMsg;
+import common.beans.QueryRes;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.List;
 
 public class ReadMessage implements Runnable {
@@ -19,35 +16,36 @@ public class ReadMessage implements Runnable {
    */
   private DataInputStream chatSocketIn = null;
   /**
-   * chat socket
-   */
-  private Socket chatSocket = null;
-  /**
    * login status of the client
    */
   private volatile LoginStatus loginStatus;
 
-  public ReadMessage(Socket chatSocket, DataInputStream chatSocketIn, DataOutputStream dataOutputStream, LoginStatus loginStatus) {
-    this.chatSocket = chatSocket;
+  public ReadMessage(DataInputStream chatSocketIn, LoginStatus loginStatus) {
     this.chatSocketIn = chatSocketIn;
     this.loginStatus = loginStatus;
   }
 
   @Override
   public void run() {
-    MessageProcessor messageProcessor = new MessageProcessor(chatSocketIn);
+    System.out.println("Client start running...");
+    ClientMessageProcessor messageProcessor = new ClientMessageProcessor(chatSocketIn);
     while (loginStatus.isLogin()) {
       try {
         int head = chatSocketIn.readInt();
         chatSocketIn.read();
+        System.out.println(head);
         switch (head) {
-          case ConstantsUtil.CONNECT_RESPONSE: disconnectHandler(messageProcessor.processConnectResMsg());
+          case CommonConstants.CONNECT_RESPONSE:
+            disconnectHandler(messageProcessor.processConnectResMsg());
             break;
-          case ConstantsUtil.QUERY_USER_RESPONSE: queryResHandler(messageProcessor.processQueryMsg());
+          case CommonConstants.QUERY_USER_RESPONSE:
+            queryResHandler(messageProcessor.processQueryMsg());
             break;
-          case ConstantsUtil.DIRECT_MESSAGE: directMsgHandler(messageProcessor.processDirectMsg());
+          case CommonConstants.DIRECT_MESSAGE:
+            directMsgHandler(messageProcessor.processDirectMsg());
             break;
-          case ConstantsUtil.FAILED_MESSAGE: failedMsgHandler(messageProcessor.processFailedMsg());
+          case CommonConstants.FAILED_MESSAGE:
+            failedMsgHandler(messageProcessor.processFailedMsg());
             break;
           default:
             System.out.println("Wrong message!");
@@ -58,12 +56,13 @@ public class ReadMessage implements Runnable {
     }
   }
 
-  private void disconnectHandler(ConnectMsgRes disconnectMsgRes) {
+  private void disconnectHandler(ConnectRes disconnectMsgRes) {
     System.out.println(disconnectMsgRes.getContent());
-    if (disconnectMsgRes.isStatus()) {
+    if (disconnectMsgRes.getStatus()) {
       loginStatus.setLogin(false);
     }
   }
+
   private void failedMsgHandler(String failedMsg) {
     System.out.println(failedMsg);
   }
@@ -74,9 +73,9 @@ public class ReadMessage implements Runnable {
   }
 
   private void queryResHandler(QueryRes queryRes) {
-    List<String> usernames = queryRes.getUsers();
-    System.out.printf("There are total %d users in the chat room:\n", usernames.size());
-    for (String username : usernames) {
+    List<String> userList = queryRes.getUserList();
+    System.out.printf("There are total %d users in the chat room:\n", userList.size());
+    for (String username : userList) {
       System.out.println(username);
     }
   }

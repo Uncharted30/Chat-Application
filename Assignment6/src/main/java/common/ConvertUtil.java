@@ -3,14 +3,16 @@ package common;
 import java.nio.ByteBuffer;
 
 public class ConvertUtil {
-  static byte booleanToByte(boolean elem) {
+
+  public static byte booleanToByte(boolean elem) {
     return (byte) (elem ? 1 : 0);
   }
-  static boolean byteToBoolean(byte elem) {
+
+  public static boolean byteToBoolean(byte elem) {
     return elem != 0;
   }
 
-  static byte[] intToByteArray(int elem) {
+  public static byte[] intToByteArray(int elem) {
     return ByteBuffer.allocate(4).putInt(elem).array();
   }
 
