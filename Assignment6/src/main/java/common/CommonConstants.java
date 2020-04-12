@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ConstantsUtil {
+
   public static final int CONNECT_MESSAGE = 19;
   public static final int CONNECT_RESPONSE = 20;
   public static final int DISCONNECT_MESSAGE = 21;
@@ -29,7 +30,9 @@ public class ConstantsUtil {
   public static final String BROADCAST_CMD = "@all";
   public static final String SEND_INSULT_CMD = "!user";
 
-  public static final Set<String> CMD_SET= new HashSet(Arrays.asList(HELP_CMD, LOG_OFF_CMD, SHOW_USERS_CMD, SEND_MESSAGE_CMD, BROADCAST_CMD, SEND_INSULT_CMD));
+  public static final Set<String> CMD_SET = new HashSet<>(Arrays
+      .asList(HELP_CMD, LOG_OFF_CMD, SHOW_USERS_CMD, SEND_MESSAGE_CMD, BROADCAST_CMD,
+          SEND_INSULT_CMD));
 
   public static final int MSG_HEAD_LEN = 4;
   public static final int MSG_SPLIT_LEN = 1;
@@ -37,4 +40,5 @@ public class ConstantsUtil {
 
   public static byte SPACE_BYTE = " ".getBytes()[0];
 
+  public static final int MAX_CLIENTS = 10;
 }

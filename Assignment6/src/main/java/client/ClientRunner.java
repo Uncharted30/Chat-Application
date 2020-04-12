@@ -1,7 +1,7 @@
 package client;
 
 import client.util.CommandParser;
-import common.ConstantsUtil;
+import common.CommonConstants;
 import java.io.IOException;
 import java.util.Map;
 import org.apache.commons.cli.ParseException;
@@ -11,8 +11,9 @@ public class Runner {
   public static void main(String[] args) {
     try {
       Map<String, String> commands = CommandParser.parse(args);
-      int port = Integer.parseInt(commands.get(ConstantsUtil.PORT_OPTION));
-      Client client = new Client(commands.get(ConstantsUtil.IP_OPTION), port, commands.get(ConstantsUtil.USERNAME_OPTION));
+      int port = Integer.parseInt(commands.get(CommonConstants.PORT_OPTION));
+      Client client = new Client(commands.get(CommonConstants.IP_OPTION), port, commands.get(
+          CommonConstants.USERNAME_OPTION));
       client.run();
     } catch (ParseException e) {
       System.err.println("Error! Failed to parse command, please check your input.");
