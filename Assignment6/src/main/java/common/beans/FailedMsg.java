@@ -75,6 +75,6 @@ public class FailedMsg extends AbstractChatRoomProtocol {
   public String toString() {
     return "FailedMsg{" +
         "content='" + content + '\'' +
-        "} " + super.toString();
+        "} ";
   }
 }

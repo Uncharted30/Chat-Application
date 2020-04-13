@@ -85,6 +85,6 @@ public class InsultMsg extends AbstractChatRoomProtocol {
     return "InsultMsg{" +
         "sender='" + sender + '\'' +
         ", recipient='" + recipient + '\'' +
-        "} " + super.toString();
+        "} " ;
   }
 }

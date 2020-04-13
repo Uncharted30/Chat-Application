@@ -68,6 +68,6 @@ public class DisconnectMsg extends AbstractChatRoomProtocol {
   public String toString() {
     return "DisconnectMsg{" +
         "username='" + username + '\'' +
-        "} " + super.toString();
+        "} ";
   }
 }

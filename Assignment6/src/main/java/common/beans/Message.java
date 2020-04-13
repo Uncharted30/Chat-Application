@@ -88,6 +88,6 @@ public abstract class Message extends AbstractChatRoomProtocol {
         "sender='" + sender + '\'' +
         ", recipient='" + recipient + '\'' +
         ", content=" + Arrays.toString(content) +
-        "} " + super.toString();
+        "} ";
   }
 }

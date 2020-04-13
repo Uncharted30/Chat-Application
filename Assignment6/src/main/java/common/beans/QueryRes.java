@@ -75,6 +75,6 @@ public class QueryRes extends AbstractChatRoomProtocol {
   public String toString() {
     return "QueryRes{" +
         "userList=" + userList +
-        "} " + super.toString();
+        "} ";
   }
 }

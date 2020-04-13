@@ -64,6 +64,6 @@ public class UserQuery extends AbstractChatRoomProtocol {
   public String toString() {
     return "UserQuery{" +
         "username='" + username + '\'' +
-        "} " + super.toString();
+        "} " ;
   }
 }
