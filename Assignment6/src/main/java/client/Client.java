@@ -7,7 +7,6 @@ import common.beans.ConnectMsg;
 import common.beans.ConnectRes;
 import java.net.*;
 import java.io.*;
-import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 public class Client {

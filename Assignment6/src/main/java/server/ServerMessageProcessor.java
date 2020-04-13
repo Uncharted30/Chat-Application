@@ -28,16 +28,6 @@ public class ServerMessageProcessor extends MessageProcessor {
   }
 
   /**
-   * Process connect message, read connect request from input stream.
-   *
-   * @return the connect msg
-   * @throws IOException the io exception
-   */
-  public ConnectMsg processConnectMsg() throws IOException {
-    return new ConnectMsg(this.readString());
-  }
-
-  /**
    * Process disconnect message, read disconnect request from input stream.
    *
    * @return the disconnect msg bean
