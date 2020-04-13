@@ -1,6 +1,5 @@
 package server;
 
-import RandomSentenceGenerator.RandomSentenceGenerator;
 import common.CommonConstants;
 import common.beans.BroadcastMsg;
 import common.beans.DisconnectMsg;
@@ -16,16 +15,16 @@ import java.util.Map;
 public class MessageAgent {
 
   private Map<String, ClientHandler> clients;
-  private RandomSentenceGenerator generator;
+//  private RandomSentenceGenerator generator;
 
   public MessageAgent(Map<String, ClientHandler> clients) {
     this.clients = clients;
-    try {
-      this.generator = new RandomSentenceGenerator(CommonConstants.GRAMMAR_DIR);
-    } catch (IOException e) {
-//      e.printStackTrace();
-      System.err.println("Error: Failed to initialize random sentence generator.");
-    }
+//    try {
+//      this.generator = new RandomSentenceGenerator(CommonConstants.GRAMMAR_DIR);
+//    } catch (IOException e) {
+////      e.printStackTrace();
+//      System.err.println("Error: Failed to initialize random sentence generator.");
+//    }
   }
 
   public boolean sendBroadcastMessage(Message message) throws IOException {
@@ -57,15 +56,15 @@ public class MessageAgent {
     return false;
   }
 
-  public boolean sendInsult(InsultMsg insultMsg) throws IOException {
-    if (this.clients.containsKey(insultMsg.getSender()) && this.clients
-        .containsKey(insultMsg.getRecipient())) {
-      String insult = this.generator.generate(CommonConstants.INSULT_TITLE);
-      insult = "[An insult to " + insultMsg.getRecipient() + " ]" + insult;
-      return this.sendBroadcastMessage(new BroadcastMsg(insultMsg.getSender(), insult.getBytes()));
-    }
-    return false;
-  }
+//  public boolean sendInsult(InsultMsg insultMsg) throws IOException {
+//    if (this.clients.containsKey(insultMsg.getSender()) && this.clients
+//        .containsKey(insultMsg.getRecipient())) {
+//      String insult = this.generator.generate(CommonConstants.INSULT_TITLE);
+//      insult = "[An insult to " + insultMsg.getRecipient() + " ]" + insult;
+//      return this.sendBroadcastMessage(new BroadcastMsg(insultMsg.getSender(), insult.getBytes()));
+//    }
+//    return false;
+//  }
 
   public void disconnect(DisconnectMsg disconnectMsg) {
     this.clients.remove(disconnectMsg.getUsername());
