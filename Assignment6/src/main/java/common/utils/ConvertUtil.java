@@ -1,4 +1,4 @@
-package common;
+package common.utils;
 
 import java.nio.ByteBuffer;
 
@@ -16,7 +16,7 @@ public class ConvertUtil {
     return ByteBuffer.allocate(4).putInt(elem).array();
   }
 
-  static int byteArrayToInt(byte[] elem) {
+  public static int byteArrayToInt(byte[] elem) {
     if (elem == null || elem.length < 4) {
       return 0xDEADBEEF;
     }

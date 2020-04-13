@@ -1,10 +1,8 @@
 package client;
 
-import common.ConvertUtil;
+import common.utils.ConvertUtil;
 import common.MessageProcessor;
-import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
-import common.beans.DirectMsg;
 import common.beans.FailedMsg;
 import common.beans.QueryRes;
 import java.io.DataInputStream;

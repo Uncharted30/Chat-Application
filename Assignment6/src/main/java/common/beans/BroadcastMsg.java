@@ -1,10 +1,9 @@
 package common.beans;
 
 import common.CommonConstants;
-import common.ConvertUtil;
+import common.utils.ConvertUtil;
 import common.utils.ArrayUtil;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class BroadcastMsg extends Message {
 

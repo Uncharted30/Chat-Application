@@ -1,6 +1,6 @@
 package common.beans;
 
-import common.ConvertUtil;
+import common.utils.ConvertUtil;
 import common.beans.interfaces.ChatRoomProtocol;
 import common.utils.ArrayUtil;
 import java.util.ArrayList;
