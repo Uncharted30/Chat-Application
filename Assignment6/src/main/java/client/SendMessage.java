@@ -7,6 +7,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * The type Send message.
+ */
 public class SendMessage implements Runnable {
 
   /**
@@ -21,14 +24,24 @@ public class SendMessage implements Runnable {
    * sender username
    */
   private String username;
-
   /**
    * login status of the client
    */
   private volatile LoginStatus loginStatus;
-
+  /**
+   * count down latch
+   */
   private CountDownLatch countDownLatch;
 
+  /**
+   * Instantiates a new Send message.
+   *
+   * @param username the username
+   * @param stdIn the std in
+   * @param chatSocketOut the chat socket out
+   * @param loginStatus the login status
+   * @param countDownLatch the count down latch
+   */
   SendMessage(String username, BufferedReader stdIn, DataOutputStream chatSocketOut, LoginStatus loginStatus, CountDownLatch countDownLatch) {
     this.username = username;
     this.stdIn = stdIn;

@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * The type Read message.
+ */
 public class ReadMessage implements Runnable {
 
   /**
@@ -19,12 +22,23 @@ public class ReadMessage implements Runnable {
    * login status of the client
    */
   private volatile LoginStatus loginStatus;
-
+  /**
+   * chat socket
+   */
   private Socket chatSocket;
-
-
+  /**
+   * count down latch
+   */
   private CountDownLatch countDownLatch;
 
+  /**
+   * Instantiates a new Read message.
+   *
+   * @param chatSocketIn input stream from chat socket
+   * @param chatSocket the chat socket
+   * @param loginStatus the login status
+   * @param countDownLatch the count down latch
+   */
   public ReadMessage(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus,
       CountDownLatch countDownLatch) {
     this.chatSocketIn = chatSocketIn;
@@ -80,6 +94,10 @@ public class ReadMessage implements Runnable {
     }
   }
 
+  /**
+   * show the msg
+   * @param msg protocol msg
+   */
   private void showMessage(ChatRoomProtocol msg) {
     System.out.println(msg.getMessage());
   }

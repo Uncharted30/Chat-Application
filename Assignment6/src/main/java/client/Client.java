@@ -11,17 +11,36 @@ import java.util.concurrent.CountDownLatch;
 
 public class Client {
 
+  /**
+   * chat socket
+   */
   private Socket chatSocket = null;
-
+  /**
+   * chat socket output stream
+   */
   private DataOutputStream chatSocketOut = null;
+  /**
+   * chat socket input stream
+   */
   private DataInputStream chatSocketIn = null;
-
+  /**
+   * standard in
+   */
   private BufferedReader stdIn = null;
+  /**
+   * username of the client
+   */
   private String username = "";
   private volatile LoginStatus loginStatus = null;
 
   private CountDownLatch countDownLatch = new CountDownLatch(2);
 
+  /**
+   *
+   * @param address the ip address of the server
+   * @param port the port of the server
+   * @param username the username of the client
+   */
   public Client(String address, int port, String username) {
     this.username = username;
     try {
@@ -40,6 +59,10 @@ public class Client {
     }
   }
 
+  /**
+   * run the client
+   * @throws IOException when there are some IOException in send message and read message thread
+   */
   public void run() throws IOException {
 
     // connect first
@@ -63,6 +86,10 @@ public class Client {
     }
   }
 
+  /**
+   * check if the client have connected to the server
+   * @return the connect status
+   */
   private boolean connect() {
     // send connect msg
     ConnectMsg connectMsg = new ConnectMsg(username);

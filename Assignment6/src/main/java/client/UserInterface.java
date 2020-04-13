@@ -10,6 +10,9 @@ import common.beans.interfaces.ChatRoomProtocol;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * The type User interface.
+ */
 public class UserInterface {
 
 
@@ -17,15 +20,36 @@ public class UserInterface {
    * whether the user has already put a command
    */
   private boolean hasCMD;
+  /**
+   * current cmd
+   */
   private String currentCMD;
+  /**
+   * username
+   */
   private String username;
+  /**
+   * standard in
+   */
   private BufferedReader stdIn;
 
+  /**
+   * Instantiates a new User interface.
+   *
+   * @param username the username
+   * @param stdIn the standard in
+   */
   UserInterface(String username, BufferedReader stdIn) {
     this.username = username;
     this.stdIn = stdIn;
   }
 
+  /**
+   * Gets message.
+   *
+   * @return the message
+   * @throws IOException the io exception
+   */
   public ChatRoomProtocol getMessage() throws IOException {
     // get CMD first
     if (!this.hasCMD) {
@@ -40,7 +64,11 @@ public class UserInterface {
     }
   }
 
-
+  /**
+   *
+   * @return the msg given the command
+   * @throws IOException IO Exception
+   */
   private ChatRoomProtocol handleCommand() throws IOException {
     ChatRoomProtocol msg;
     switch (this.currentCMD) {
@@ -71,6 +99,9 @@ public class UserInterface {
     return msg;
   }
 
+  /**
+   * handle help cmd
+   */
   private void handleHelpCommand() {
     System.out.println("Usage:");
     System.out.println("logoff: sends a DISCONNECT_MESSAGE to the server\n"
@@ -82,18 +113,31 @@ public class UserInterface {
     currentCMD = "";
   }
 
+  /**
+   * handle log off cmd
+   * @return disconnectMsg
+   */
   private DisconnectMsg handleLogOffCommand() {
     hasCMD = false;
     currentCMD = "";
     return new DisconnectMsg(username);
   }
 
+  /**
+   * handle who cmd
+   * @return UserQuery
+   */
   private UserQuery handleShowUsersCommand() {
     hasCMD = false;
     currentCMD = "";
     return new UserQuery(username);
   }
 
+  /**
+   * handle @user cmd
+   * @return direct msg
+   * @throws IOException io exception
+   */
   private DirectMsg handleSendMessageCommand() throws IOException {
     System.out.println("Please Enter the username you want to send the message to:");
     String receiver = stdIn.readLine();
@@ -104,6 +148,11 @@ public class UserInterface {
     return new DirectMsg(username, receiver, message.getBytes());
   }
 
+  /**
+   * handle @all cmd
+   * @return broadcast msg
+   * @throws IOException io exception
+   */
   private BroadcastMsg handleBroadCastCommand() throws IOException {
     System.out.println("Please Enter the message you want to send:");
     String message = stdIn.readLine();
@@ -112,6 +161,11 @@ public class UserInterface {
     return new BroadcastMsg(username, message.getBytes());
   }
 
+  /**
+   * handle !user cmd
+   * @return insult msg
+   * @throws IOException io exception
+   */
   private InsultMsg handleSendInsultCommand() throws IOException {
     System.out.println("Please Enter the username you want to send the insult to:");
     String receiver = stdIn.readLine();
