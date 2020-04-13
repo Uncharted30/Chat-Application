@@ -36,6 +36,8 @@ It is a interface which defines the serialize and deserialize method. All the me
 #### MessageProcessor
 It is a abstract class which use to process the data from the socket input stream.
 
+
+
 ### Client Side:
 #### MessageReader
 It is a thread which use to get the data from server.
@@ -43,6 +45,8 @@ It is a thread which use to get the data from server.
 It is a thread which use to send the data to server.
 #### ClientMessageProcessor
 It is extends from `MessageProcessor`, and use to process the data from server.
+
+
 
 ### Server Side:
 #### ClientHandler
