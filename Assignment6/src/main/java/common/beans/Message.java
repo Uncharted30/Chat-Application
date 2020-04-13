@@ -1,29 +1,62 @@
 package common.beans;
 
-import common.beans.interfaces.ChatRoomProtocol;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * The type Message, which contains a sender, a recipient and content.
+ */
 public abstract class Message extends AbstractChatRoomProtocol {
 
+  /**
+   * The Sender.
+   */
   protected String sender;
+  /**
+   * The Recipient.
+   */
   protected String recipient;
+  /**
+   * The Content.
+   */
   protected byte[] content;
 
+  /**
+   * Instantiates a new Message.
+   *
+   * @param sender    the sender
+   * @param recipient the recipient
+   * @param content   the content
+   */
   public Message(String sender, String recipient, byte[] content) {
     this.sender = sender;
     this.recipient = recipient;
     this.content = content;
   }
 
+  /**
+   * Gets sender.
+   *
+   * @return the sender
+   */
   public String getSender() {
     return this.sender;
   }
 
+  /**
+   * Gets recipient.
+   *
+   * @return the recipient
+   */
   public String getRecipient() {
     return this.recipient;
   }
 
+  /**
+   * Get content byte [ ].
+   *
+   * @return the byte [ ]
+   */
   public byte[] getContent() {
     return content;
   }

@@ -4,21 +4,17 @@ import common.CommonConstants;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The type Array util.
+ */
 public class ArrayUtil {
-//  public static <T> T[] concat(T[] first, T[]... rest) {
-//    int totalLength = first.length;
-//    for (T[] arr : rest) {
-//      totalLength += arr.length;
-//    }
-//    T[] result = arrs.copyOf(first, totalLength);
-//    int offset = first.length;
-//    for (T[] arr : rest) {
-//      System.arrcopy(arr, 0, result, offset, arr.length);
-//      offset += arr.length;
-//    }
-//    return result;
-//  }
 
+  /**
+   * Concat byte arrays into one byte array, use a space as separator.
+   *
+   * @param list the list of byte array to be concatenated
+   * @return the result byte array
+   */
   public static byte[] concat(List<byte[]> list) {
     if (list.isEmpty()) return new byte[0];
     if (list.size() == 1) return list.get(0);

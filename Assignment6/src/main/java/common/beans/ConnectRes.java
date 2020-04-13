@@ -8,24 +8,48 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * The type Connect res.
+ */
 public class ConnectRes implements ChatRoomProtocol {
 
   private boolean status;
   private String content;
 
+  /**
+   * Instantiates a new Connect res.
+   *
+   * @param status  the status
+   * @param content the content
+   */
   public ConnectRes(boolean status, String content) {
     this.status = status;
     this.content = content;
   }
 
+  /**
+   * Gets status.
+   *
+   * @return the status
+   */
   public boolean getStatus() {
     return status;
   }
 
+  /**
+   * Gets content.
+   *
+   * @return the content
+   */
   public String getContent() {
     return content;
   }
 
+  /**
+   * Serialize the object, the result could be transferred between server and client.
+   *
+   * @return the byte array
+   */
   @Override
   public byte[] toByteArray() {
     byte[] contentBytes = this.content.getBytes();
@@ -36,6 +60,11 @@ public class ConnectRes implements ChatRoomProtocol {
         new ArrayList<>(Arrays.asList(headerBytes, statusBytes, lengthBytes, contentBytes)));
   }
 
+  /**
+   * Deserialize the byte array.
+   *
+   * @return the message
+   */
   @Override
   public String getMessage() {
     return this.content;

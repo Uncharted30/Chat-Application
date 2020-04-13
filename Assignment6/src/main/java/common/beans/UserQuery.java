@@ -1,17 +1,29 @@
 package common.beans;
 
 import common.CommonConstants;
-import common.beans.interfaces.ChatRoomProtocol;
 import java.util.Objects;
 
+/**
+ * The type User query bean, contains user query request information.
+ */
 public class UserQuery extends AbstractChatRoomProtocol {
 
   private String username;
 
+  /**
+   * Instantiates a new User query object.
+   *
+   * @param username the username
+   */
   public UserQuery(String username) {
     this.username = username;
   }
 
+  /**
+   * Gets username.
+   *
+   * @return the username
+   */
   public String getUsername() {
     return username;
   }
@@ -21,6 +33,11 @@ public class UserQuery extends AbstractChatRoomProtocol {
     return this.toByteArray(CommonConstants.QUERY_CONNECTED_USERS, this.username);
   }
 
+  /**
+   * Deserialize the byte array.
+   *
+   * @return the message
+   */
   @Override
   public String getMessage() {
     return "User " + this.username + "is requesting user list.";

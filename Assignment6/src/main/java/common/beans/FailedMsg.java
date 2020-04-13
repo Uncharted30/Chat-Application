@@ -6,18 +6,36 @@ import common.utils.ArrayUtil;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * The type Failed msg.
+ */
 public class FailedMsg extends AbstractChatRoomProtocol {
 
-  String content;
+  private String content;
 
+  /**
+   * Instantiates a new Failed msg.
+   *
+   * @param content the content
+   */
   public FailedMsg(String content) {
     this.content = content;
   }
 
+  /**
+   * Gets content.
+   *
+   * @return the content
+   */
   public String getContent() {
     return content;
   }
 
+  /**
+   * Serialize the object, the result could be transferred between server and client.
+   *
+   * @return the byte array
+   */
   @Override
   public byte[] toByteArray() {
     byte[] contentBytes = content.getBytes();
@@ -26,6 +44,11 @@ public class FailedMsg extends AbstractChatRoomProtocol {
     return ArrayUtil.concat(Arrays.asList(header, lengthBytes, contentBytes));
   }
 
+  /**
+   * Deserialize the byte array.
+   *
+   * @return the message
+   */
   @Override
   public String getMessage() {
     return content;
