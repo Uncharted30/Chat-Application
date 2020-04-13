@@ -105,7 +105,6 @@ public class ClientHandler implements Runnable {
    */
   public void sendMessage(byte[] message) throws IOException {
     this.dataOutputStream.write(message);
-    System.out.println(Arrays.toString(message));
   }
 
   /**

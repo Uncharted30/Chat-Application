@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * The type Send message.
  */
-public class SendMessage implements Runnable {
+public class MessageSender implements Runnable {
 
   /**
    * read buffer from system.in
@@ -42,7 +42,7 @@ public class SendMessage implements Runnable {
    * @param loginStatus the login status
    * @param countDownLatch the count down latch
    */
-  SendMessage(String username, BufferedReader stdIn, DataOutputStream chatSocketOut, LoginStatus loginStatus, CountDownLatch countDownLatch) {
+  MessageSender(String username, BufferedReader stdIn, DataOutputStream chatSocketOut, LoginStatus loginStatus, CountDownLatch countDownLatch) {
     this.username = username;
     this.stdIn = stdIn;
     this.chatSocketOut = chatSocketOut;

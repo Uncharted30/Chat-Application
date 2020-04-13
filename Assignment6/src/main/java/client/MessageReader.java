@@ -12,7 +12,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * The type Read message.
  */
-public class ReadMessage implements Runnable {
+public class MessageReader implements Runnable {
 
   /**
    * input stream from chat socket
@@ -39,7 +39,7 @@ public class ReadMessage implements Runnable {
    * @param loginStatus the login status
    * @param countDownLatch the count down latch
    */
-  public ReadMessage(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus,
+  public MessageReader(DataInputStream chatSocketIn, Socket chatSocket, LoginStatus loginStatus,
       CountDownLatch countDownLatch) {
     this.chatSocketIn = chatSocketIn;
     this.loginStatus = loginStatus;

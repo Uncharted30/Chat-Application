@@ -2,7 +2,6 @@ package client;
 
 // A Java program for a Client
 import client.bean.LoginStatus;
-import common.CommonConstants;
 import common.beans.ConnectMsg;
 import common.beans.ConnectRes;
 import java.net.*;
@@ -71,13 +70,13 @@ public class Client {
     }
 
     // sendMessage thread
-    SendMessage sendMessage = new SendMessage(username, stdIn, chatSocketOut, loginStatus, countDownLatch);
+    MessageSender messageSender = new MessageSender(username, stdIn, chatSocketOut, loginStatus, countDownLatch);
     // readMessage thread
-    ReadMessage readMessage = new ReadMessage(chatSocketIn, chatSocket, loginStatus, countDownLatch);
+    MessageReader messageReader = new MessageReader(chatSocketIn, chatSocket, loginStatus, countDownLatch);
 
-    new Thread(sendMessage).start();
+    new Thread(messageSender).start();
 
-    new Thread(readMessage).start();
+    new Thread(messageReader).start();
 
     try {
       countDownLatch.await();
