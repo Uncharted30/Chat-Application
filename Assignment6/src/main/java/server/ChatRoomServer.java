@@ -8,13 +8,17 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import server.interfaces.Server;
 
+/**
+ * The type Chat room server, response to clients' connection request.
+ */
 public class ChatRoomServer extends Thread implements Server {
 
   private int port;
@@ -25,6 +29,12 @@ public class ChatRoomServer extends Thread implements Server {
   private ExecutorService executor;
   private ServerMessageAgent serverMessageAgent;
 
+  /**
+   * Instantiates a new Chat room server listening on the specific port.
+   *
+   * @param port the port to listening on
+   * @throws IOException the io exception
+   */
   public ChatRoomServer(int port) throws IOException {
     if (port <= 0 || port > 0xFFFF) {
       this.port = CommonConstants.DEFAULT_PORT;
@@ -39,10 +49,18 @@ public class ChatRoomServer extends Thread implements Server {
     this.serverMessageAgent = new ServerMessageAgent(this.clients);
   }
 
+  /**
+   * Instantiates a new Chat room server which listening on a random available port.
+   *
+   * @throws IOException the io exception
+   */
   public ChatRoomServer() throws IOException {
     this(0);
   }
 
+  /**
+   * Start server.
+   */
   @Override
   public void startServer() {
     this.isRunning = true;
@@ -50,9 +68,11 @@ public class ChatRoomServer extends Thread implements Server {
     System.out.printf("The server is listening on port %d.\n", this.port);
   }
 
+  /**
+   * Stop server, shut down all running threads and send clients disconnect message.
+   */
   @Override
   public void stopServer() {
-    this.isRunning = false;
     this.executor.shutdown();
     for (ClientHandler clientHandler : clients.values()) {
       try {
@@ -61,21 +81,33 @@ public class ChatRoomServer extends Thread implements Server {
         e.printStackTrace();
       }
     }
+    this.isRunning = false;
     try {
+      this.executor.awaitTermination(CommonConstants.TERMINATE_TIMEOUT, TimeUnit.MILLISECONDS);
       this.serverSocket.close();
-    } catch (IOException e) {
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
   }
 
+  /**
+   * Sends clients connect response.
+   *
+   * @param socket the socket of client
+   * @param status connection status
+   * @param msg message to be sent to the client
+   * @throws IOException the io exception
+   */
   private void sendConnectionResponse(Socket socket, boolean status, String msg)
       throws IOException {
     DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
     ConnectRes connectRes = new ConnectRes(status, msg);
     dataOutputStream.write(connectRes.toByteArray());
-    System.out.println(Arrays.toString(connectRes.toByteArray()));
   }
 
+  /**
+   * Start accepting clients' connection request.
+   */
   @Override
   public void run() {
     try {
@@ -95,7 +127,6 @@ public class ChatRoomServer extends Thread implements Server {
                 DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                 int header = dataInputStream.readInt();
                 dataInputStream.read();
-                System.out.println(header);
                 if (header == CommonConstants.CONNECT_MESSAGE) {
                   int len = dataInputStream.readInt();
                   dataInputStream.read();
@@ -103,7 +134,8 @@ public class ChatRoomServer extends Thread implements Server {
                   dataInputStream.read(usernameByte, 0, len);
                   String username = new String(usernameByte);
                   if (!this.clients.containsKey(username)) {
-                    ClientHandler clientHandler = new ClientHandler(socket, this.serverMessageAgent);
+                    ClientHandler clientHandler = new ClientHandler(socket,
+                        this.serverMessageAgent);
                     this.executor.execute(clientHandler);
                     this.sendConnectionResponse(socket, true,
                         "There are " + this.clients.size() + " other connected clients.");
@@ -122,19 +154,44 @@ public class ChatRoomServer extends Thread implements Server {
           }
         } catch (IOException e) {
 //          e.printStackTrace();
-          try {
-            this.sendConnectionResponse(socket, false,
-                "An IO exception occurred when establishing connection, please try again later.");
-          } catch (IOException ex) {
-            ex.printStackTrace();
+          if (socket != null) {
+            try {
+              this.sendConnectionResponse(socket, false,
+                  "An IO exception occurred when establishing connection, please try again later.");
+            } catch (IOException ex) {
+              ex.printStackTrace();
+            }
           }
         } finally {
           socket = null;
         }
       }
-    } finally {
+    } catch (Exception e) {
+      e.printStackTrace();
       this.stopServer();
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ChatRoomServer that = (ChatRoomServer) o;
+    return port == that.port &&
+        serverSocket.equals(that.serverSocket) &&
+        isRunning.equals(that.isRunning) &&
+        clients.equals(that.clients) &&
+        executor.equals(that.executor) &&
+        serverMessageAgent.equals(that.serverMessageAgent);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(port, serverSocket, isRunning, clients, executor, serverMessageAgent);
   }
 }
 

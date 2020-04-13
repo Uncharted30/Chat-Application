@@ -10,11 +10,16 @@ import common.beans.InsultMsg;
 import common.beans.UserQuery;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
+import java.util.Objects;
 
+/**
+ * The type Client handler, handles clients requests in separate threads.
+ */
 public class ClientHandler implements Runnable {
 
   private Socket socket;
@@ -24,6 +29,13 @@ public class ClientHandler implements Runnable {
   private DataOutputStream dataOutputStream;
   private ServerMessageProcessor messageProcessor;
 
+  /**
+   * Instantiates a new Client handler.
+   *
+   * @param socket             the socket of the client
+   * @param serverMessageAgent the server message agent
+   * @throws IOException the io exception
+   */
   public ClientHandler(Socket socket, ServerMessageAgent serverMessageAgent) throws IOException {
     this.socket = socket;
     this.serverMessageAgent = serverMessageAgent;
@@ -33,6 +45,11 @@ public class ClientHandler implements Runnable {
     this.messageProcessor = new ServerMessageProcessor(this.dataInputStream);
   }
 
+  /**
+   * Start listening clients' request.
+   *
+   * @throws IOException the io exception
+   */
   private void listen() throws IOException {
     while (this.connected) {
       try {
@@ -55,10 +72,14 @@ public class ClientHandler implements Runnable {
             this.handleInsultMessage();
             break;
           default:
-            System.out.println("Wrong header!");
+            this.sendFailedMessage("Undefined header.");
         }
       } catch (SocketTimeoutException e) {
 //        e.printStackTrace();
+      } catch (EOFException e) {
+        if (this.connected) {
+          this.disconnect();
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -66,16 +87,29 @@ public class ClientHandler implements Runnable {
     this.socket.close();
   }
 
+  /**
+   * Disconnect the client from the server.
+   *
+   * @throws IOException the io exception
+   */
   public void disconnect() throws IOException {
     this.sendMessage(new ConnectRes(false, "You are no longer connected.").toByteArray());
     this.connected = false;
   }
 
+  /**
+   * Send message to the client.
+   *
+   * @param message the message
+   * @throws IOException the io exception
+   */
   public void sendMessage(byte[] message) throws IOException {
     this.dataOutputStream.write(message);
-    System.out.println(Arrays.toString(message));
   }
 
+  /**
+   * Handles disconnect request, send client response and stop the thread.
+   */
   private void handleDisconnectMsg() {
     try {
       DisconnectMsg disconnectMsg = this.messageProcessor.processDisconnectMsg();
@@ -89,6 +123,9 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  /**
+   * Handles user query request, send user connected user list.
+   */
   private void handleUserQuery() {
     try {
       UserQuery userQuery = this.messageProcessor.processUserQuery();
@@ -102,6 +139,10 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  /**
+   * Handles broadcast message sending request, send the message to every client that connected to
+   * the server.
+   */
   private void handleBroadcastMessage() {
     try {
       BroadcastMsg broadcastMsg = this.messageProcessor.processBroadcastMsg();
@@ -115,6 +156,9 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  /**
+   * Handles direct message sending request, send the message to the recipient.
+   */
   private void handleDirectMessage() {
     try {
       DirectMsg directMsg = this.messageProcessor.processDirectMsg();
@@ -128,6 +172,11 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  /**
+   * Sends a failed message to the client.
+   *
+   * @param message the failed message to be sent.
+   */
   private void sendFailedMessage(String message) {
     FailedMsg failedMsg = new FailedMsg(message);
     try {
@@ -137,6 +186,9 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  /**
+   * Handles insult message sending request, randomly generates a insult sentence and send it.
+   */
   private void handleInsultMessage() {
     try {
       InsultMsg insultMsg = this.messageProcessor.processInsultMsg();
@@ -150,6 +202,9 @@ public class ClientHandler implements Runnable {
     }
   }
 
+  /**
+   * Start running the thread.
+   */
   @Override
   public void run() {
     try {
@@ -157,5 +212,28 @@ public class ClientHandler implements Runnable {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ClientHandler that = (ClientHandler) o;
+    return socket.equals(that.socket) &&
+        serverMessageAgent.equals(that.serverMessageAgent) &&
+        connected.equals(that.connected) &&
+        dataInputStream.equals(that.dataInputStream) &&
+        dataOutputStream.equals(that.dataOutputStream) &&
+        messageProcessor.equals(that.messageProcessor);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(socket, serverMessageAgent, connected, dataInputStream, dataOutputStream,
+        messageProcessor);
   }
 }

@@ -3,7 +3,7 @@ package client;
 // A Java program for a Client
 import client.bean.LoginStatus;
 import common.CommonConstants;
-import common.MessageConstuctor;
+import common.beans.ConnectMsg;
 import common.beans.ConnectRes;
 import java.net.*;
 import java.io.*;
@@ -66,9 +66,9 @@ public class Client {
 
   private boolean connect() {
     // send connect msg
-    byte[] connectMsg = MessageConstuctor.getTypeOneMsg(Arrays.asList(username), CommonConstants.CONNECT_MESSAGE);
+    ConnectMsg connectMsg = new ConnectMsg(username);
     try {
-      chatSocketOut.write(connectMsg);
+      chatSocketOut.write(connectMsg.toByteArray());
       // read head
       chatSocketIn.readInt();
       // read space

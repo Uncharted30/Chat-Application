@@ -1,6 +1,5 @@
 package common;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,10 +45,7 @@ public class CommonConstants {
   public static final int MAX_CLIENTS = 10;
 
   public static final int ACCEPT_TIMEOUT = 3000;
-
-  public static final int BUFFER_TIMEOUT = 3000;
-
+  public static final int TERMINATE_TIMEOUT = 5000;
   public static final int DEFAULT_PORT = 0;
-
   public static final int CONNECTION_TIMEOUT = 5000;
 }

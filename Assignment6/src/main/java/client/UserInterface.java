@@ -1,7 +1,6 @@
 package client;
 
 import common.CommonConstants;
-import common.MessageConstuctor;
 import common.beans.BroadcastMsg;
 import common.beans.DirectMsg;
 import common.beans.DisconnectMsg;
@@ -10,7 +9,6 @@ import common.beans.UserQuery;
 import common.beans.interfaces.ChatRoomProtocol;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class UserInterface {
 

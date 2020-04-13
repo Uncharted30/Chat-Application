@@ -13,7 +13,6 @@ public class ServerRunner {
     while (!"exit".equals(command)) {
       command = in.nextLine();
     }
-    System.out.println(command);
     chatRoomServer.stopServer();
   }
 }
