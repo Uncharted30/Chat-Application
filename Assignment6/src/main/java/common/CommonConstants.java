@@ -30,6 +30,9 @@ public class CommonConstants {
   public static final String BROADCAST_CMD = "@all";
   public static final String SEND_INSULT_CMD = "!user";
 
+  public static final String GRAMMAR_DIR = "grammars";
+  public static final String INSULT_TITLE = "Insult Generator";
+
   public static final Set<String> CMD_SET = new HashSet<>(Arrays
       .asList(HELP_CMD, LOG_OFF_CMD, SHOW_USERS_CMD, SEND_MESSAGE_CMD, BROADCAST_CMD,
           SEND_INSULT_CMD));

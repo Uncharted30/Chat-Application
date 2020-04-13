@@ -1,23 +1,31 @@
 package server;
 
+import RandomSentenceGenerator.RandomSentenceGenerator;
+import common.CommonConstants;
+import common.beans.BroadcastMsg;
 import common.beans.DisconnectMsg;
+import common.beans.InsultMsg;
 import common.beans.Message;
 import common.beans.QueryRes;
 import common.beans.UserQuery;
-import common.beans.interfaces.ChatRoomProtocol;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class MessageAgent {
 
   private Map<String, ClientHandler> clients;
+  private RandomSentenceGenerator generator;
 
   public MessageAgent(Map<String, ClientHandler> clients) {
     this.clients = clients;
+    try {
+      this.generator = new RandomSentenceGenerator(CommonConstants.GRAMMAR_DIR);
+    } catch (IOException e) {
+//      e.printStackTrace();
+      System.err.println("Error: Failed to initialize random sentence generator.");
+    }
   }
 
   public boolean sendBroadcastMessage(Message message) throws IOException {
@@ -45,6 +53,16 @@ public class MessageAgent {
       users.remove(userQuery.getUsername());
       this.clients.get(userQuery.getUsername()).sendMessage(new QueryRes(users).toByteArray());
       return true;
+    }
+    return false;
+  }
+
+  public boolean sendInsult(InsultMsg insultMsg) throws IOException {
+    if (this.clients.containsKey(insultMsg.getSender()) && this.clients
+        .containsKey(insultMsg.getRecipient())) {
+      String insult = this.generator.generate(CommonConstants.INSULT_TITLE);
+      insult = "[An insult to " + insultMsg.getRecipient() + " ]" + insult;
+      return this.sendBroadcastMessage(new BroadcastMsg(insultMsg.getSender(), insult.getBytes()));
     }
     return false;
   }

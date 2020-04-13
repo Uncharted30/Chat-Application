@@ -6,6 +6,7 @@ import common.beans.ConnectRes;
 import common.beans.DirectMsg;
 import common.beans.DisconnectMsg;
 import common.beans.FailedMsg;
+import common.beans.InsultMsg;
 import common.beans.UserQuery;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -122,7 +123,7 @@ public class ClientHandler implements Runnable {
       }
     } catch (IOException e) {
       System.err.println(e.getMessage());
-      e.printStackTrace();
+      this.sendFailedMessage("Exception occurred when sending the message. " + e.getMessage());
     }
   }
 
@@ -132,6 +133,19 @@ public class ClientHandler implements Runnable {
       this.sendMessage(failedMsg.toByteArray());
     } catch (IOException ex) {
       ex.printStackTrace();
+    }
+  }
+
+  private void handleInsultMessage() {
+    try {
+      InsultMsg insultMsg = this.messageProcessor.processInsultMsg();
+      boolean res = this.messageAgent.sendInsult(insultMsg);
+      if (!res) {
+        this.sendFailedMessage("Invalid user or recipient");
+      }
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+      this.sendFailedMessage("Exception occurred when sending the message. " + e.getMessage());
     }
   }
 
