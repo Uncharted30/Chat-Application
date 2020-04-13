@@ -6,14 +6,14 @@ import java.util.Scanner;
 public class ServerRunner {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    Server server = new Server();
-    server.startServer();
+    ChatRoomServer chatRoomServer = new ChatRoomServer();
+    chatRoomServer.startServer();
     String command = "";
     Scanner in = new Scanner(System.in);
     while (!"exit".equals(command)) {
       command = in.nextLine();
     }
     System.out.println(command);
-    server.stopServer();
+    chatRoomServer.stopServer();
   }
 }

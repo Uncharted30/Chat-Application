@@ -4,29 +4,12 @@ import common.CommonConstants;
 import common.ConvertUtil;
 import common.utils.ArrayUtil;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class BroadcastMsg extends Message {
 
-  private String sender;
-  private byte[] content;
-
   public BroadcastMsg(String sender, byte[] content) {
-    this.sender = sender;
-    this.content = content;
-  }
-
-  @Override
-  public String getSender() {
-    return sender;
-  }
-
-  @Override
-  public String getRecipient() {
-    return null;
-  }
-
-  public byte[] getContent() {
-    return content;
+    super(sender, null, content);
   }
 
   @Override
@@ -41,8 +24,6 @@ public class BroadcastMsg extends Message {
 
   @Override
   public String getMessage() {
-    return new String(this.content);
+    return this.sender + " [Broadcast]: " + new String(this.content);
   }
-
-
 }

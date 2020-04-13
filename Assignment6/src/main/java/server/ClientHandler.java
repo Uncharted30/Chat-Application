@@ -13,19 +13,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 
 public class ClientHandler implements Runnable {
 
   private Socket socket;
-  private MessageAgent messageAgent;
+  private ServerMessageAgent serverMessageAgent;
   private Boolean connected;
   private DataInputStream dataInputStream;
   private DataOutputStream dataOutputStream;
   private ServerMessageProcessor messageProcessor;
 
-  public ClientHandler(Socket socket, MessageAgent messageAgent) throws IOException {
+  public ClientHandler(Socket socket, ServerMessageAgent serverMessageAgent) throws IOException {
     this.socket = socket;
-    this.messageAgent = messageAgent;
+    this.serverMessageAgent = serverMessageAgent;
     this.connected = true;
     this.dataInputStream = new DataInputStream(socket.getInputStream());
     this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -51,7 +52,7 @@ public class ClientHandler implements Runnable {
             this.handleDirectMessage();
             break;
           case (CommonConstants.SEND_INSULT):
-            System.out.println("INSULT!");
+            this.handleInsultMessage();
             break;
           default:
             System.out.println("Wrong header!");
@@ -72,13 +73,13 @@ public class ClientHandler implements Runnable {
 
   public void sendMessage(byte[] message) throws IOException {
     this.dataOutputStream.write(message);
-    System.out.println(new String(message));
+    System.out.println(Arrays.toString(message));
   }
 
   private void handleDisconnectMsg() {
     try {
       DisconnectMsg disconnectMsg = this.messageProcessor.processDisconnectMsg();
-      this.messageAgent.disconnect(disconnectMsg);
+      this.serverMessageAgent.disconnect(disconnectMsg);
       this.disconnect();
     } catch (IOException e) {
       System.err.println(e.getMessage());
@@ -91,7 +92,7 @@ public class ClientHandler implements Runnable {
   private void handleUserQuery() {
     try {
       UserQuery userQuery = this.messageProcessor.processUserQuery();
-      boolean res = this.messageAgent.sendUserList(userQuery);
+      boolean res = this.serverMessageAgent.sendUserList(userQuery);
       if (!res) {
         this.sendFailedMessage("You are not connected.");
       }
@@ -104,7 +105,7 @@ public class ClientHandler implements Runnable {
   private void handleBroadcastMessage() {
     try {
       BroadcastMsg broadcastMsg = this.messageProcessor.processBroadcastMsg();
-      boolean res = this.messageAgent.sendBroadcastMessage(broadcastMsg);
+      boolean res = this.serverMessageAgent.sendBroadcastMessage(broadcastMsg);
       if (!res) {
         this.sendFailedMessage("Invalid sender!");
       }
@@ -117,7 +118,7 @@ public class ClientHandler implements Runnable {
   private void handleDirectMessage() {
     try {
       DirectMsg directMsg = this.messageProcessor.processDirectMsg();
-      boolean res = this.messageAgent.sendDirectMessage(directMsg);
+      boolean res = this.serverMessageAgent.sendDirectMessage(directMsg);
       if (!res) {
         this.sendFailedMessage("Invalid sender or recipient.");
       }
@@ -139,7 +140,7 @@ public class ClientHandler implements Runnable {
   private void handleInsultMessage() {
     try {
       InsultMsg insultMsg = this.messageProcessor.processInsultMsg();
-      boolean res = this.messageAgent.sendInsult(insultMsg);
+      boolean res = this.serverMessageAgent.sendInsult(insultMsg);
       if (!res) {
         this.sendFailedMessage("Invalid user or recipient");
       }

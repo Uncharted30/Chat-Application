@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import server.interfaces.Server;
 
-public class Server extends Thread {
+public class ChatRoomServer extends Thread implements Server {
 
   private int port;
   private ServerSocket serverSocket;
@@ -22,9 +23,9 @@ public class Server extends Thread {
   private volatile Boolean isRunning;
   private Map<String, ClientHandler> clients;
   private ExecutorService executor;
-  private MessageAgent messageAgent;
+  private ServerMessageAgent serverMessageAgent;
 
-  public Server(int port) throws IOException {
+  public ChatRoomServer(int port) throws IOException {
     if (port <= 0 || port > 0xFFFF) {
       this.port = CommonConstants.DEFAULT_PORT;
     } else {
@@ -35,19 +36,21 @@ public class Server extends Thread {
     serverSocket.setSoTimeout(CommonConstants.ACCEPT_TIMEOUT);
     this.clients = new ConcurrentHashMap<>();
     this.executor = Executors.newFixedThreadPool(CommonConstants.MAX_CLIENTS);
-    this.messageAgent = new MessageAgent(this.clients);
+    this.serverMessageAgent = new ServerMessageAgent(this.clients);
   }
 
-  public Server() throws IOException {
+  public ChatRoomServer() throws IOException {
     this(0);
   }
 
+  @Override
   public void startServer() {
     this.isRunning = true;
     this.start();
     System.out.printf("The server is listening on port %d.\n", this.port);
   }
 
+  @Override
   public void stopServer() {
     this.isRunning = false;
     this.executor.shutdown();
@@ -92,6 +95,7 @@ public class Server extends Thread {
                 DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                 int header = dataInputStream.readInt();
                 dataInputStream.read();
+                System.out.println(header);
                 if (header == CommonConstants.CONNECT_MESSAGE) {
                   int len = dataInputStream.readInt();
                   dataInputStream.read();
@@ -99,7 +103,7 @@ public class Server extends Thread {
                   dataInputStream.read(usernameByte, 0, len);
                   String username = new String(usernameByte);
                   if (!this.clients.containsKey(username)) {
-                    ClientHandler clientHandler = new ClientHandler(socket, this.messageAgent);
+                    ClientHandler clientHandler = new ClientHandler(socket, this.serverMessageAgent);
                     this.executor.execute(clientHandler);
                     this.sendConnectionResponse(socket, true,
                         "There are " + this.clients.size() + " other connected clients.");
@@ -112,7 +116,7 @@ public class Server extends Thread {
                 this.sendConnectionResponse(socket, false, "Connection timeout!");
               }
             } else if (clients.size() > CommonConstants.MAX_CLIENTS) {
-              this.sendConnectionResponse(socket, true,
+              this.sendConnectionResponse(socket, false,
                   "Connection rejected. Server has reached its capacity.");
             }
           }

@@ -2,6 +2,12 @@ package client;
 
 import common.CommonConstants;
 import common.MessageConstuctor;
+import common.beans.BroadcastMsg;
+import common.beans.DirectMsg;
+import common.beans.DisconnectMsg;
+import common.beans.InsultMsg;
+import common.beans.UserQuery;
+import common.beans.interfaces.ChatRoomProtocol;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,16 +27,14 @@ public class UserInterface {
     this.stdIn = stdIn;
   }
 
-  public byte[] getMessage() throws IOException {
+  public ChatRoomProtocol getMessage() throws IOException {
     // get CMD first
     if (!this.hasCMD) {
       System.out.println("\nPlease Enter a command: ");
       String line = stdIn.readLine();
       getCommand(line);
-      return new byte[0];
-    }
-    // handle CMD
-    else {
+      return null;
+    } else {
       return handleCommand();
     }
   }
@@ -46,11 +50,11 @@ public class UserInterface {
     }
   }
 
-  private byte[] handleCommand() throws IOException {
-    byte[] msg;
+  private ChatRoomProtocol handleCommand() throws IOException {
+    ChatRoomProtocol msg;
     switch (this.currentCMD) {
       case CommonConstants.HELP_CMD:
-        msg = handleHelpCommand();
+        msg = null;
         break;
       case CommonConstants.LOG_OFF_CMD:
         msg = handleLogOffCommand();
@@ -69,7 +73,7 @@ public class UserInterface {
         break;
       default:
         System.out.println("Error! No Such Command!");
-        msg = new byte[0];
+        msg = null;
     }
     return msg;
   }
@@ -86,46 +90,41 @@ public class UserInterface {
     return new byte[0];
   }
 
-  private byte[] handleLogOffCommand() {
+  private DisconnectMsg handleLogOffCommand() {
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor
-        .getTypeOneMsg(Arrays.asList(username), CommonConstants.DISCONNECT_MESSAGE);
+    return new DisconnectMsg(username);
   }
 
-  private byte[] handleShowUsersCommand() {
+  private UserQuery handleShowUsersCommand() {
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor
-        .getTypeOneMsg(Arrays.asList(username), CommonConstants.QUERY_CONNECTED_USERS);
+    return new UserQuery(username);
   }
 
-  private byte[] handleSendMessageCommand() throws IOException {
+  private DirectMsg handleSendMessageCommand() throws IOException {
     System.out.println("Please Enter the username you want to send the message to:");
     String receiver = stdIn.readLine();
     System.out.println("Please Enter the message you want to send:");
     String message = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor
-        .getTypeOneMsg(Arrays.asList(username, receiver, message), CommonConstants.DIRECT_MESSAGE);
+    return new DirectMsg(username, receiver, message.getBytes());
   }
 
-  private byte[] handleBroadCastCommand() throws IOException {
+  private BroadcastMsg handleBroadCastCommand() throws IOException {
     System.out.println("Please Enter the message you want to send:");
     String message = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor
-        .getTypeOneMsg(Arrays.asList(username, message), CommonConstants.BROADCAST_MESSAGE);
+    return new BroadcastMsg(username, message.getBytes());
   }
 
-  private byte[] handleSendInsultCommand() throws IOException {
+  private InsultMsg handleSendInsultCommand() throws IOException {
     System.out.println("Please Enter the username you want to send the insult to:");
     String receiver = stdIn.readLine();
     hasCMD = false;
     currentCMD = "";
-    return MessageConstuctor
-        .getTypeOneMsg(Arrays.asList(username, receiver), CommonConstants.SEND_INSULT);
+    return new InsultMsg(username, receiver);
   }
 }

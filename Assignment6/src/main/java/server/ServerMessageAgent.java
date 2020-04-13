@@ -1,5 +1,6 @@
 package server;
 
+import assignment4.RandomSentenceGenerator;
 import common.CommonConstants;
 import common.beans.BroadcastMsg;
 import common.beans.DisconnectMsg;
@@ -11,22 +12,25 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.json.simple.parser.ParseException;
+import server.interfaces.MessageAgent;
 
-public class MessageAgent {
+public class ServerMessageAgent implements MessageAgent {
 
   private Map<String, ClientHandler> clients;
-//  private RandomSentenceGenerator generator;
+  private RandomSentenceGenerator generator;
 
-  public MessageAgent(Map<String, ClientHandler> clients) {
+  public ServerMessageAgent(Map<String, ClientHandler> clients) {
     this.clients = clients;
-//    try {
-//      this.generator = new RandomSentenceGenerator(CommonConstants.GRAMMAR_DIR);
-//    } catch (IOException e) {
-////      e.printStackTrace();
-//      System.err.println("Error: Failed to initialize random sentence generator.");
-//    }
+    try {
+      this.generator = new RandomSentenceGenerator(CommonConstants.GRAMMAR_DIR);
+    } catch (IOException | ParseException e) {
+//      e.printStackTrace();
+      System.err.println("Error: Failed to initialize random sentence generator.");
+    }
   }
 
+  @Override
   public boolean sendBroadcastMessage(Message message) throws IOException {
     if (this.clients.containsKey(message.getSender())) {
       for (ClientHandler clientHandler : this.clients.values()) {
@@ -37,6 +41,7 @@ public class MessageAgent {
     return false;
   }
 
+  @Override
   public boolean sendDirectMessage(Message message) throws IOException {
     if (this.clients.containsKey(message.getSender()) && this.clients
         .containsKey(message.getRecipient())) {
@@ -56,15 +61,15 @@ public class MessageAgent {
     return false;
   }
 
-//  public boolean sendInsult(InsultMsg insultMsg) throws IOException {
-//    if (this.clients.containsKey(insultMsg.getSender()) && this.clients
-//        .containsKey(insultMsg.getRecipient())) {
-//      String insult = this.generator.generate(CommonConstants.INSULT_TITLE);
-//      insult = "[An insult to " + insultMsg.getRecipient() + " ]" + insult;
-//      return this.sendBroadcastMessage(new BroadcastMsg(insultMsg.getSender(), insult.getBytes()));
-//    }
-//    return false;
-//  }
+  public boolean sendInsult(InsultMsg insultMsg) throws IOException {
+    if (this.clients.containsKey(insultMsg.getSender()) && this.clients
+        .containsKey(insultMsg.getRecipient())) {
+      String insult = this.generator.generate(CommonConstants.INSULT_TITLE);
+      insult = "[An insult to " + insultMsg.getRecipient() + "] " + insult;
+      return this.sendBroadcastMessage(new BroadcastMsg(insultMsg.getSender(), insult.getBytes()));
+    }
+    return false;
+  }
 
   public void disconnect(DisconnectMsg disconnectMsg) {
     this.clients.remove(disconnectMsg.getUsername());

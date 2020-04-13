@@ -5,7 +5,9 @@ import common.CommonConstants;
 import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
 import common.beans.DirectMsg;
+import common.beans.FailedMsg;
 import common.beans.QueryRes;
+import common.beans.interfaces.ChatRoomProtocol;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -48,19 +50,24 @@ public class ReadMessage implements Runnable {
 //        System.out.println(head);
         switch (head) {
           case CommonConstants.CONNECT_RESPONSE:
-            disconnectHandler(messageProcessor.processDisconnectResMsg());
+            ConnectRes connectRes = messageProcessor.processDisconnectResMsg();
+            this.showMessage(connectRes);
+            if (!connectRes.getStatus()) {
+              loginStatus.setLogin(false);
+              System.out.println("Press enter to quit!");
+            }
             break;
           case CommonConstants.QUERY_USER_RESPONSE:
-            queryResHandler(messageProcessor.processQueryMsg());
+            this.showMessage(messageProcessor.processQueryMsg());
             break;
           case CommonConstants.DIRECT_MESSAGE:
-            directMsgHandler(messageProcessor.processDirectMsg());
+            this.showMessage(messageProcessor.processDirectMsg());
             break;
           case CommonConstants.FAILED_MESSAGE:
-            failedMsgHandler(messageProcessor.processFailedMsg());
+            this.showMessage(messageProcessor.processFailedMsg());
             break;
           case CommonConstants.BROADCAST_MESSAGE:
-            broadcastMsgHandler(messageProcessor.processBroadcastMsg());
+            this.showMessage(messageProcessor.processBroadcastMsg());
             break;
           default:
             System.out.println("Wrong message!");
@@ -79,33 +86,7 @@ public class ReadMessage implements Runnable {
     }
   }
 
-  private void disconnectHandler(ConnectRes disconnectMsgRes) {
-    System.out.println(disconnectMsgRes.getContent());
-    if (!disconnectMsgRes.getStatus()) {
-      loginStatus.setLogin(false);
-      System.out.println("Press enter to quit!");
-    }
+  private void showMessage(ChatRoomProtocol msg) {
+    System.out.println(msg.getMessage());
   }
-
-  private void failedMsgHandler(String failedMsg) {
-    System.out.println(failedMsg);
-  }
-
-  private void directMsgHandler(DirectMsg directMsg) {
-    System.out
-        .println(directMsg.getSender() + " sent you a direct message: " + directMsg.getMessage());
-  }
-
-  private void broadcastMsgHandler(BroadcastMsg broadcastMsg) {
-    System.out.println(broadcastMsg.getSender() + ": " + broadcastMsg.getMessage());
-  }
-
-  private void queryResHandler(QueryRes queryRes) {
-    List<String> userList = queryRes.getUserList();
-    System.out.printf("There are total %d users in the chat room:\n", userList.size() + 1);
-    for (String username : userList) {
-      System.out.println(username);
-    }
-  }
-
 }

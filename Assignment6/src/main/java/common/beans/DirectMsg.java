@@ -7,28 +7,8 @@ import java.util.Arrays;
 
 public class DirectMsg extends Message {
 
-  private String sender;
-  private String recipient;
-  private byte[] content;
-
   public DirectMsg(String sender, String recipient, byte[] content) {
-    this.sender = sender;
-    this.recipient = recipient;
-    this.content = content;
-  }
-
-  @Override
-  public String getSender() {
-    return sender;
-  }
-
-  @Override
-  public String getRecipient() {
-    return recipient;
-  }
-
-  public byte[] getContent() {
-    return content;
+    super(sender, recipient, content);
   }
 
   @Override
@@ -41,6 +21,6 @@ public class DirectMsg extends Message {
 
   @Override
   public String getMessage() {
-    return new String(content);
+    return this.sender + " [Direct]: " + new String(content);
   }
 }

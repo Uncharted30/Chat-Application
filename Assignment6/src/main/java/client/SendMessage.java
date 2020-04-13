@@ -1,6 +1,7 @@
 package client;
 
 import client.bean.LoginStatus;
+import common.beans.interfaces.ChatRoomProtocol;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,11 +44,10 @@ public class SendMessage implements Runnable {
       while (loginStatus.isLogin()) {
         // read the message to deliver.
         // todo: parse input from UI
-        byte[] msg = userInterface.getMessage();
+        ChatRoomProtocol msg = userInterface.getMessage();
         // write on the output stream
-        if (msg.length > 0) {
-          System.out.printf("write %d length bytes\n", msg.length);
-          chatSocketOut.write(msg);
+        if (msg != null) {
+          chatSocketOut.write(msg.toByteArray());
         }
       }
     } catch (Exception e) {

@@ -1,5 +1,6 @@
 package server;
 
+import common.MessageProcessor;
 import common.beans.BroadcastMsg;
 import common.beans.ConnectMsg;
 import common.beans.DirectMsg;
@@ -11,11 +12,12 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-public class ServerMessageProcessor {
+public class ServerMessageProcessor extends MessageProcessor {
 
   private DataInputStream dataInputStream;
 
   public ServerMessageProcessor(DataInputStream dataInputStream) {
+    super(dataInputStream);
     this.dataInputStream = dataInputStream;
   }
 
@@ -31,43 +33,10 @@ public class ServerMessageProcessor {
     return new UserQuery(this.readString());
   }
 
-  public BroadcastMsg processBroadcastMsg() throws IOException {
-    String sender = this.readString();
-    this.dataInputStream.read();
-    byte[] content = this.readByteArray();
-    return new BroadcastMsg(sender, content);
-  }
-
-  public DirectMsg processDirectMsg() throws IOException {
-    String sender = this.readString();
-    this.dataInputStream.read();
-    String recipient = this.readString();
-    this.dataInputStream.read();
-    byte[] content = this.readByteArray();
-    System.out.println(Arrays.toString(content));
-    return new DirectMsg(sender, recipient, content);
-  }
-
   public InsultMsg processInsultMsg() throws IOException {
     String sender = this.readString();
     this.dataInputStream.read();
     String recipient = this.readString();
     return new InsultMsg(sender, recipient);
-  }
-
-  private String readString() throws IOException {
-    int len = this.dataInputStream.readInt();
-    this.dataInputStream.read();
-    byte[] usernameBytes = new byte[len];
-    this.dataInputStream.read(usernameBytes);
-    return new String(usernameBytes, 0, len);
-  }
-
-  private byte[] readByteArray() throws IOException {
-    int len = this.dataInputStream.readInt();
-    this.dataInputStream.read();
-    byte[] result = new byte[len];
-    this.dataInputStream.read(result, 0, len);
-    return result;
   }
 }

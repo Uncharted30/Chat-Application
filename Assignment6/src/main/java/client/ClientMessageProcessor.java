@@ -1,82 +1,54 @@
 package client;
 
 import common.ConvertUtil;
+import common.MessageProcessor;
 import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
 import common.beans.DirectMsg;
+import common.beans.FailedMsg;
 import common.beans.QueryRes;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientMessageProcessor {
+public class ClientMessageProcessor extends MessageProcessor {
+
   private DataInputStream inputStream;
 
   public ClientMessageProcessor(DataInputStream inputStream) {
+    super(inputStream);
     this.inputStream = inputStream;
-  }
-
-  private String readItem() throws IOException{
-    int itemLen = inputStream.readInt();
-    byte[] item = new byte[itemLen];
-    inputStream.read();
-    inputStream.read(item, 0, itemLen);
-    return new String(item);
   }
 
   public ConnectRes processDisconnectResMsg() throws IOException {
     boolean status = ConvertUtil.byteToBoolean((byte)inputStream.read());
     inputStream.read();
-    String content = readItem();
+    String content = readString();
     return new ConnectRes(status, content);
   }
 
-  public String processFailedMsg() throws IOException {
-    return readItem();
+  public FailedMsg processFailedMsg() throws IOException {
+    return new FailedMsg(this.readString());
   }
 
   public ConnectRes processConnectResMsg() throws IOException{
     boolean status = ConvertUtil.byteToBoolean((byte)inputStream.read());
     inputStream.read();
-    String content = readItem();
+    String content = readString();
     return new ConnectRes(status, content);
-  }
-
-  public DirectMsg processDirectMsg() throws IOException{
-    String sender = readItem();
-    inputStream.read();
-    String recipient = readItem();
-    inputStream.read();
-    byte[] content = this.readByteArray();
-    return new DirectMsg(sender, recipient, content);
-  }
-
-  public BroadcastMsg processBroadcastMsg() throws IOException{
-    String sender = readItem();
-    inputStream.read();
-    byte[] content = this.readByteArray();
-    return new BroadcastMsg(sender, content);
   }
 
   public QueryRes processQueryMsg() throws IOException{
     int userNum = inputStream.readInt();
     List<String> users = new ArrayList<>();
     for (int i = 0; i < userNum; i++) {
-      inputStream.read();
-      users.add(readItem());
+      this.inputStream.read();
+      users.add(readString());
     }
     return new QueryRes(users);
   }
 
-  private byte[] readByteArray() throws IOException {
-    int len = this.inputStream.readInt();
-    this.inputStream.read();
-//    System.out.println(len);
-    byte[] result = new byte[len];
-    this.inputStream.read(result, 0, len);
-    return result;
-  }
 
   public DataInputStream getInputStream() {
     return inputStream;
