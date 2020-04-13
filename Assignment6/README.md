@@ -7,7 +7,6 @@ Users can use this program to chat with each other in the chat room.
 - [x] logoff command
 - [x] who command
 - [x] @user command
-- [x] logoff command
 - [x] @all command
 - [x] !user command
 - [x] message deserialize and serialize through given protocol
