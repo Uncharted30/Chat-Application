@@ -1,8 +1,6 @@
 package common.beans;
 
 import common.CommonConstants;
-import common.ConvertUtil;
-import java.util.Arrays;
 import java.util.List;
 
 public class QueryRes extends AbstractChatRoomProtocol {

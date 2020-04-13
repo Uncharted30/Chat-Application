@@ -8,6 +8,7 @@ import common.beans.InsultMsg;
 import common.beans.UserQuery;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 
 public class ServerMessageProcessor {
@@ -43,6 +44,7 @@ public class ServerMessageProcessor {
     String recipient = this.readString();
     this.dataInputStream.read();
     byte[] content = this.readByteArray();
+    System.out.println(Arrays.toString(content));
     return new DirectMsg(sender, recipient, content);
   }
 

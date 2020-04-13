@@ -98,11 +98,15 @@ public class Server extends Thread {
                   byte[] usernameByte = new byte[len];
                   dataInputStream.read(usernameByte, 0, len);
                   String username = new String(usernameByte);
-                  ClientHandler clientHandler = new ClientHandler(socket, this.messageAgent);
-                  this.executor.execute(clientHandler);
-                  this.sendConnectionResponse(socket, true,
-                      "There are " + this.clients.size() + " other connected clients.");
-                  this.clients.put(username, clientHandler);
+                  if (!this.clients.containsKey(username)) {
+                    ClientHandler clientHandler = new ClientHandler(socket, this.messageAgent);
+                    this.executor.execute(clientHandler);
+                    this.sendConnectionResponse(socket, true,
+                        "There are " + this.clients.size() + " other connected clients.");
+                    this.clients.put(username, clientHandler);
+                  } else {
+                    this.sendConnectionResponse(socket, false, "Username exits.");
+                  }
                 }
               } catch (SocketTimeoutException e) {
                 this.sendConnectionResponse(socket, false, "Connection timeout!");
@@ -120,6 +124,8 @@ public class Server extends Thread {
           } catch (IOException ex) {
             ex.printStackTrace();
           }
+        } finally {
+          socket = null;
         }
       }
     } finally {

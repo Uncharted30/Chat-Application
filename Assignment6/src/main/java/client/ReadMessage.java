@@ -99,7 +99,7 @@ public class ReadMessage implements Runnable {
 
   private void queryResHandler(QueryRes queryRes) {
     List<String> userList = queryRes.getUserList();
-    System.out.printf("There are total %d users in the chat room:\n", userList.size());
+    System.out.printf("There are total %d users in the chat room:\n", userList.size() + 1);
     for (String username : userList) {
       System.out.println(username);
     }

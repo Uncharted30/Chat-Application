@@ -1,10 +1,12 @@
 package common.beans;
 
 import common.CommonConstants;
+import common.ConvertUtil;
 import common.utils.ArrayUtil;
 import java.util.Arrays;
 
 public class DirectMsg extends Message {
+
   private String sender;
   private String recipient;
   private byte[] content;
@@ -33,7 +35,8 @@ public class DirectMsg extends Message {
   public byte[] toByteArray() {
     byte[] bytes = this
         .toByteArray(CommonConstants.DIRECT_MESSAGE, Arrays.asList(this.sender, this.recipient));
-    return ArrayUtil.concat(Arrays.asList(bytes, this.content));
+    byte[] lengthBytes = ConvertUtil.intToByteArray(this.content.length);
+    return ArrayUtil.concat(Arrays.asList(bytes, lengthBytes, this.content));
   }
 
   @Override

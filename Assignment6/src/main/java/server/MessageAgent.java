@@ -7,6 +7,8 @@ import common.beans.UserQuery;
 import common.beans.interfaces.ChatRoomProtocol;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,10 +41,9 @@ public class MessageAgent {
 
   public boolean sendUserList(UserQuery userQuery) throws IOException {
     if (this.clients.containsKey(userQuery.getUsername())) {
-      Set<String> users = this.clients.keySet();
+      List<String> users = new LinkedList<>(this.clients.keySet());
       users.remove(userQuery.getUsername());
-      this.clients.get(userQuery.getUsername())
-          .sendMessage(new QueryRes(new ArrayList<>(users)).toByteArray());
+      this.clients.get(userQuery.getUsername()).sendMessage(new QueryRes(users).toByteArray());
       return true;
     }
     return false;
