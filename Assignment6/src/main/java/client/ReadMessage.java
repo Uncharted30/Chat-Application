@@ -2,17 +2,11 @@ package client;
 
 import client.bean.LoginStatus;
 import common.CommonConstants;
-import common.beans.BroadcastMsg;
 import common.beans.ConnectRes;
-import common.beans.DirectMsg;
-import common.beans.FailedMsg;
-import common.beans.QueryRes;
 import common.beans.interfaces.ChatRoomProtocol;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class ReadMessage implements Runnable {

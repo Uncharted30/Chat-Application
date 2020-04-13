@@ -48,13 +48,4 @@ public class ClientMessageProcessor extends MessageProcessor {
     }
     return new QueryRes(users);
   }
-
-
-  public DataInputStream getInputStream() {
-    return inputStream;
-  }
-
-  public void setInputStream(DataInputStream inputStream) {
-    this.inputStream = inputStream;
-  }
 }

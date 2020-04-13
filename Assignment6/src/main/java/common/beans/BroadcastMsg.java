@@ -9,7 +9,7 @@ import java.util.Objects;
 public class BroadcastMsg extends Message {
 
   public BroadcastMsg(String sender, byte[] content) {
-    super(sender, null, content);
+    super(sender, "", content);
   }
 
   @Override

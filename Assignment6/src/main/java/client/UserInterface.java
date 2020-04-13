@@ -14,6 +14,7 @@ import java.util.Arrays;
 
 public class UserInterface {
 
+
   /**
    * whether the user has already put a command
    */
@@ -32,28 +33,21 @@ public class UserInterface {
     if (!this.hasCMD) {
       System.out.println("\nPlease Enter a command: ");
       String line = stdIn.readLine();
-      getCommand(line);
+      this.currentCMD = line;
+      this.hasCMD = true;
       return null;
+      // handle CMD
     } else {
       return handleCommand();
     }
   }
 
-  private void getCommand(String line) {
-    // no such command
-    if (!CommonConstants.CMD_SET.contains(line)) {
-      System.out.println("Error! No Such Command!");
-      System.out.println("Type ? to see the usage");
-    } else {
-      this.currentCMD = line;
-      this.hasCMD = true;
-    }
-  }
 
   private ChatRoomProtocol handleCommand() throws IOException {
     ChatRoomProtocol msg;
     switch (this.currentCMD) {
       case CommonConstants.HELP_CMD:
+        handleHelpCommand();
         msg = null;
         break;
       case CommonConstants.LOG_OFF_CMD:
@@ -73,12 +67,13 @@ public class UserInterface {
         break;
       default:
         System.out.println("Error! No Such Command!");
+        System.out.println("Type ? to see the usage");
         msg = null;
     }
     return msg;
   }
 
-  private byte[] handleHelpCommand() {
+  private void handleHelpCommand() {
     System.out.println("Usage:");
     System.out.println("logoff: sends a DISCONNECT_MESSAGE to the server\n"
         + "who: sends a QUERY_CONNECTED_USERS to the server\n"
@@ -87,7 +82,6 @@ public class UserInterface {
         + "!user: sends a SEND_INSULT message to the server, to be sent to the specified user");
     hasCMD = false;
     currentCMD = "";
-    return new byte[0];
   }
 
   private DisconnectMsg handleLogOffCommand() {
