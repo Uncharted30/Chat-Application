@@ -59,7 +59,7 @@ public class InsultMsg extends AbstractChatRoomProtocol {
    */
   @Override
   public String getMessage() {
-    return null;
+    return this.sender + " is trying to send an insult to " + this.recipient;
   }
 
   @Override

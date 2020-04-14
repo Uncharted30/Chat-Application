@@ -9,7 +9,7 @@ import server.utils.ServerCommandParser;
 
 public class ServerRunner {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String[] args) {
     try {
       Map<String, String> commands = ServerCommandParser.parseCommand(args);
       String portString = commands.getOrDefault(CommonConstants.PORT_OPTION, "0");
@@ -25,6 +25,8 @@ public class ServerRunner {
     } catch (ParseException e) {
       System.err.println("Error: failed to parse command, please check your command.");
 //      e.printStackTrace();
+    } catch (IOException e) {
+      System.err.println("Error: failed to create a server, please try again.");
     }
   }
 }

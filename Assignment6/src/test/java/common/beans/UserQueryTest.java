@@ -20,7 +20,7 @@ public class UserQueryTest {
 
   @Test
   public void getMessage() {
-    assertEquals( "User " + this.username + "is requesting user list.", userQuery.getMessage());
+    assertEquals( "User " + this.username + " is requesting user list.", userQuery.getMessage());
   }
 
   @Test

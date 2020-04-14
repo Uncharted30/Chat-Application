@@ -1,7 +1,8 @@
 package server;
 
 import common.MessageProcessor;
-import common.beans.ConnectMsg;
+import common.beans.BroadcastMsg;
+import common.beans.DirectMsg;
 import common.beans.DisconnectMsg;
 import common.beans.InsultMsg;
 import common.beans.UserQuery;
@@ -34,7 +35,9 @@ public class ServerMessageProcessor extends MessageProcessor {
    * @throws IOException the io exception
    */
   public DisconnectMsg processDisconnectMsg() throws IOException {
-    return new DisconnectMsg(this.readString());
+    DisconnectMsg disconnectMsg = new DisconnectMsg(this.readString());
+    System.out.println(disconnectMsg.getMessage());
+    return disconnectMsg;
   }
 
   /**
@@ -44,7 +47,9 @@ public class ServerMessageProcessor extends MessageProcessor {
    * @throws IOException the io exception
    */
   public UserQuery processUserQuery() throws IOException {
-    return new UserQuery(this.readString());
+    UserQuery userQuery = new UserQuery(this.readString());
+    System.out.println(userQuery.getMessage());
+    return userQuery;
   }
 
   /**
@@ -57,7 +62,35 @@ public class ServerMessageProcessor extends MessageProcessor {
     String sender = this.readString();
     this.dataInputStream.read();
     String recipient = this.readString();
-    return new InsultMsg(sender, recipient);
+    InsultMsg insultMsg = new InsultMsg(sender, recipient);
+    System.out.println(insultMsg.getMessage());
+    return insultMsg;
+  }
+
+  /**
+   * Process broadcast message, reads a broadcast message from input stream.
+   *
+   * @return the broadcast msg
+   * @throws IOException the io exception
+   */
+  @Override
+  public BroadcastMsg processBroadcastMsg() throws IOException {
+    BroadcastMsg broadcastMsg = super.processBroadcastMsg();
+    System.out.println(broadcastMsg.getMessage());
+    return broadcastMsg;
+  }
+
+  /**
+   * Process direct message, reads a direct message from input stream.
+   *
+   * @return the direct msg
+   * @throws IOException the io exception
+   */
+  @Override
+  public DirectMsg processDirectMsg() throws IOException {
+    DirectMsg directMsg = super.processDirectMsg();
+    System.out.println("To " + directMsg.getRecipient() + ": " + directMsg.getMessage());
+    return directMsg;
   }
 
   @Override

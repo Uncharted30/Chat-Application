@@ -37,7 +37,7 @@ public class DisconnectMsgTest {
 
   @Test
   public void getMessage() {
-    assertEquals("User " + username + "is trying to disconnect.", disconnectMsg.getMessage());
+    assertEquals("User " + username + " is trying to disconnect.", disconnectMsg.getMessage());
   }
 
   @Test

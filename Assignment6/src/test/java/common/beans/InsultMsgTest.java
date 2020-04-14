@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class InsultMsgTest {
+
   InsultMsg insultMsg;
   String sender = "haolan";
   String recipient = "pan";
@@ -27,7 +28,8 @@ public class InsultMsgTest {
 
   @Test
   public void getMessage() {
-    assertNull(insultMsg.getMessage());
+    assertEquals(this.sender + " is trying to send an insult to " + this.recipient,
+        this.insultMsg.getMessage());
   }
 
   @Test
@@ -54,6 +56,6 @@ public class InsultMsgTest {
     assertEquals("InsultMsg{" +
         "sender='" + sender + '\'' +
         ", recipient='" + recipient + '\'' +
-        "} " , insultMsg.toString());
+        "} ", insultMsg.toString());
   }
 }

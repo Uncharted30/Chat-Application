@@ -40,7 +40,7 @@ public class UserQuery extends AbstractChatRoomProtocol {
    */
   @Override
   public String getMessage() {
-    return "User " + this.username + "is requesting user list.";
+    return "User " + this.username + " is requesting user list.";
   }
 
   @Override
