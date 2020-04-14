@@ -13,11 +13,14 @@ Users can use this program to chat with each other in the chat room.
 
 
 ## Usage
-Run the server first
+Run the server first:
 `$ -p $port`, if `-p` is not specified the server will run on the random port.
 
-Run the client
+Run the client:
 `$ -i $ip_address -p $port -u $username` if `-i` is not specified the client will try to connect the `localhost`
+
+Stop the server:
+use `exit` command to stop the server and all clients
 
 Command Description
 - logoff: sends a DISCONNECT_MESSAGE to the server
